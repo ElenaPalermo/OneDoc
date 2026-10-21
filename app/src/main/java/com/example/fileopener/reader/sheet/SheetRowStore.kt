@@ -233,18 +233,8 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
     ): SheetSearchChunk {
         if (query.isEmpty() || fromOffset >= untilOffset) return SheetSearchChunk(emptyList(), fromOffset)
         val matches = ArrayList<CellPosition>()
-        var next = fromOffset
-        PositionedInput(file, fromOffset).use { input ->
-            while (matches.size < limit && input.position < untilOffset && isActive()) {
-                val (rowIndex, row) = input.readRecordOrNull() ?: break
-                next = input.position
-                for (cell in row.cells) {
-                    if (cell.text.contains(query, ignoreCase = true)) {
-                        matches += CellPosition(rowIndex, cell.column)
-                        if (matches.size >= limit) break
-                    }
-                }
-            }
+        val next = RecordSearcher(file, fromOffset, CellMatcher(query)).use {
+            it.search(matches, limit, untilOffset, isActive)
         }
         return SheetSearchChunk(matches.sortedWith(compareBy(CellPosition::row, CellPosition::column)), next)
     }
@@ -286,13 +276,164 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
             return index to SheetRow(cells)
         }
 
-        fun readRecordOrNull(): Pair<Int, SheetRow>? = try {
-            readRecord()
-        } catch (e: EOFException) {
-            null
+        override fun close() = data.close()
+    }
+
+    /**
+     * Поиск по записям прямо в байтах файла: на листе в миллион строк создание [SheetCell] и строки
+     * на каждую ячейку стоило больше самого сравнения.
+     */
+    private class RecordSearcher(file: File, origin: Long, private val matcher: CellMatcher) : Closeable {
+        private val input = FileInputStream(file).apply { channel.position(origin) }
+        private val buffer = ByteArray(SEARCH_BUFFER)
+        /** Смещение в файле байта `buffer[0]`. */
+        private var bufferOrigin = origin
+        private var pos = 0
+        private var end = 0
+
+        private val position: Long get() = bufferOrigin + pos
+
+        /**
+         * Ищет, пока не наберётся [limit] совпадений в [matches] или не начнётся запись после [untilOffset].
+         * Возвращает смещение после последней прочитанной целиком записи.
+         */
+        fun search(matches: MutableList<CellPosition>, limit: Int, untilOffset: Long, isActive: () -> Boolean): Long {
+            var next = position
+            var records = 0
+            try {
+                while (matches.size < limit && position < untilOffset) {
+                    if (records++ % ACTIVE_CHECK_RECORDS == 0 && !isActive()) break
+                    val row = readVarInt()
+                    repeat(readVarInt()) {
+                        val column = readVarInt()
+                        readVarInt() // стиль
+                        ensure(3)
+                        pos++ // тип ячейки
+                        val length = ((buffer[pos].toInt() and 0xFF) shl 8) or (buffer[pos + 1].toInt() and 0xFF)
+                        pos += 2
+                        ensure(length)
+                        if (matches.size < limit && matcher.matches(buffer, pos, length)) matches += CellPosition(row, column)
+                        pos += length
+                    }
+                    next = position
+                }
+            } catch (e: EOFException) {
+                // Конец записанной части файла: недописанная запись найдётся при следующем поиске.
+            }
+            return next
         }
 
-        override fun close() = data.close()
+        private fun readVarInt(): Int {
+            var result = 0
+            var shift = 0
+            while (true) {
+                ensure(1)
+                val byte = buffer[pos++].toInt() and 0xFF
+                result = result or ((byte and 0x7F) shl shift)
+                if (byte and 0x80 == 0) return result
+                shift += 7
+                if (shift > 28) throw java.io.IOException("Повреждён кэш листа")
+            }
+        }
+
+        /** Дочитывает буфер, чтобы с [pos] было доступно [count] байт. */
+        private fun ensure(count: Int) {
+            if (end - pos >= count) return
+            buffer.copyInto(buffer, 0, pos, end)
+            bufferOrigin += pos
+            end -= pos
+            pos = 0
+            while (end < count) {
+                val read = input.read(buffer, end, buffer.size - end)
+                if (read <= 0) throw EOFException()
+                end += read
+            }
+        }
+
+        override fun close() = input.close()
+    }
+
+    /**
+     * Сравнение текста ячейки в modified UTF-8 с запросом без учёта регистра, как `contains(ignoreCase = true)`.
+     * Ячейки из одних ASCII-символов (числа, коды, латиница) сравниваются побайтово, остальные декодируются.
+     */
+    private class CellMatcher(private val query: String) {
+        /** Запрос в нижнем регистре ASCII; `null`, если в нём есть другие символы. */
+        private val asciiQuery: ByteArray? =
+            if (query.all { it.code < 0x80 }) ByteArray(query.length) { asciiLower(query[it].code.toByte()) } else null
+
+        /**
+         * Запрос не из ASCII не найдётся в ASCII-тексте, если ни один его символ не совпадает
+         * без учёта регистра с ASCII-символом (как знак кельвина `K` с `k`).
+         */
+        private val skipAsciiText: Boolean = asciiQuery == null && query.none { char ->
+            char.code >= 0x80 && (char.uppercaseChar().code < 0x80 || char.lowercaseChar().code < 0x80 ||
+                char.uppercaseChar().lowercaseChar().code < 0x80)
+        }
+
+        private val text = StringBuilder()
+
+        fun matches(bytes: ByteArray, offset: Int, length: Int): Boolean {
+            val end = offset + length
+            var ascii = true
+            for (i in offset until end) {
+                if (bytes[i] < 0) {
+                    ascii = false
+                    break
+                }
+            }
+            if (ascii) {
+                if (asciiQuery != null) return asciiContains(bytes, offset, end, asciiQuery)
+                if (skipAsciiText) return false
+            }
+            decode(bytes, offset, end)
+            return text.contains(query, ignoreCase = true)
+        }
+
+        private fun asciiContains(bytes: ByteArray, offset: Int, end: Int, pattern: ByteArray): Boolean {
+            val last = end - pattern.size
+            val first = pattern[0]
+            for (start in offset..last) {
+                if (asciiLower(bytes[start]) != first) continue
+                var j = 1
+                while (j < pattern.size && asciiLower(bytes[start + j]) == pattern[j]) j++
+                if (j == pattern.size) return true
+            }
+            return false
+        }
+
+        /** Modified UTF-8 из [DataOutputStream.writeUTF]: символы по 1–3 байта, суррогаты — отдельно. */
+        private fun decode(bytes: ByteArray, offset: Int, end: Int) {
+            text.setLength(0)
+            var i = offset
+            while (i < end) {
+                val byte = bytes[i].toInt() and 0xFF
+                when {
+                    byte < 0x80 -> {
+                        text.append(byte.toChar())
+                        i++
+                    }
+                    byte < 0xE0 -> {
+                        text.append((((byte and 0x1F) shl 6) or (bytes[i + 1].toInt() and 0x3F)).toChar())
+                        i += 2
+                    }
+                    else -> {
+                        val code = ((byte and 0x0F) shl 12) or ((bytes[i + 1].toInt() and 0x3F) shl 6) or
+                            (bytes[i + 2].toInt() and 0x3F)
+                        text.append(code.toChar())
+                        i += 3
+                    }
+                }
+            }
+        }
+
+        private fun asciiLower(byte: Byte): Byte = if (byte >= UPPER_A && byte <= UPPER_Z) (byte + CASE_SHIFT).toByte() else byte
+
+        private companion object {
+            const val UPPER_A = 'A'.code.toByte()
+            const val UPPER_Z = 'Z'.code.toByte()
+            const val CASE_SHIFT = 'a'.code - 'A'.code
+        }
     }
 
     /** Считает байты, отданные читателю, — это позиция в файле относительно начала чтения. */
@@ -312,6 +453,10 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
 
     private companion object {
         const val IO_BUFFER = 64 * 1024
+        /** Больше самого длинного поля записи (строка modified UTF-8 — до 65 537 байт). */
+        const val SEARCH_BUFFER = 256 * 1024
+        /** Как часто поиск проверяет отмену. */
+        const val ACTIVE_CHECK_RECORDS = 256
         const val INITIAL_ROWS = 1024
         const val FIRST_PUBLISH_ROWS = 100
         const val PUBLISH_ROWS = 5_000

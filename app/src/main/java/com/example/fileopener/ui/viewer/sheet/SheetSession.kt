@@ -192,10 +192,10 @@ class SheetSession(
             try {
                 while (true) {
                     val published = data.state.value
+                    // Кусками, чтобы первые совпадения показывались, не дожидаясь прохода по всему листу.
+                    val until = minOf(published.publishedBytes, offset + SEARCH_CHUNK_BYTES)
                     val chunk = withContext(Dispatchers.IO) {
-                        data.store.searchRange(trimmed, MAX_MATCHES - matches.size, offset, published.publishedBytes) {
-                            job.isActive
-                        }
+                        data.store.searchRange(trimmed, MAX_MATCHES - matches.size, offset, until) { job.isActive }
                     }
                     matches += chunk.matches
                     offset = chunk.nextOffset
@@ -206,11 +206,13 @@ class SheetSession(
                         else -> matches.indexOfFirst { it.row >= fromRow }.takeIf { it >= 0 }
                             ?: if (done && matches.isNotEmpty()) 0 else -1
                     }
-                    _search.value = SheetSearchState(trimmed, sheetIndex, matches.toList(), current, inProgress = !done)
+                    if (done || chunk.matches.isNotEmpty() || current != previous.currentIndex) {
+                        _search.value = SheetSearchState(trimmed, sheetIndex, matches.toList(), current, inProgress = !done)
+                    }
                     if (previous.currentIndex < 0 && current >= 0) navigateToCurrent()
                     if (done) break
-                    // Ждём, пока парсер опубликует новые строки.
-                    data.state.first { it.complete || it.publishedBytes > offset }
+                    // Всё опубликованное просмотрено — ждём, пока парсер допишет новые строки.
+                    if (offset >= published.publishedBytes) data.state.first { it.complete || it.publishedBytes > offset }
                 }
             } catch (e: IOException) {
                 _search.update { it.copy(inProgress = false) }
@@ -268,6 +270,8 @@ class SheetSession(
 
     companion object {
         const val MAX_MATCHES = 10_000
+        /** Сколько байт кэша листа просматривать между обновлениями результатов (~300 тыс. ячеек). */
+        private const val SEARCH_CHUNK_BYTES = 4L * 1024 * 1024
         private const val MATCH_ROW_MARGIN = 2
     }
 }

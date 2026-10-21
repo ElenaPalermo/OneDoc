@@ -7,6 +7,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
+import kotlin.random.Random
 
 class SheetRowStoreTest {
     private val file = File.createTempFile("store", ".bin")
@@ -111,6 +112,45 @@ class SheetRowStoreTest {
         store.finish()
         val rest = store.searchRange("москва", 10, partial.nextOffset, store.state.value.publishedBytes)
         assertEquals(listOf(CellPosition(150, 2)), rest.matches)
+    }
+
+    @Test
+    fun search_matchesStringContainsIgnoreCase() {
+        val random = Random(7)
+        val alphabet = "aAbBzZ09.,- яЯёЁжЖKİiIkKßẞ\u0000😀"
+        fun text(length: Int) = buildString { repeat(length) { append(alphabet[random.nextInt(alphabet.length)]) } }
+        val rows = List(3_000) { row ->
+            List(1 + random.nextInt(4)) { column ->
+                val length = if (row % 500 == 0) 1_500 + random.nextInt(500) else random.nextInt(12)
+                // Половина ячеек — только ASCII, как числа и коды на больших листах.
+                SheetCell(column * 2, if (random.nextBoolean()) text(length).filter { it.code < 0x80 } else text(length))
+            }
+        }
+        rows.forEachIndexed { index, cells -> store.row(index, cells) }
+        store.finish()
+        val queries = listOf("a", "Ab", "z0", "9.", "ЯЖ", "ё", "k", "K", "K", "i", "İ", "ß", "ẞ", "😀", "\u0000", "a\u0000") +
+            List(40) { text(1 + random.nextInt(3)) }
+        for (query in queries) {
+            val expected = rows.flatMapIndexed { index, cells ->
+                cells.filter { it.text.contains(query, ignoreCase = true) }.map { CellPosition(index, it.column) }
+            }
+            assertEquals("запрос «$query»", expected, store.search(query, limit = Int.MAX_VALUE))
+        }
+    }
+
+    @Test
+    fun searchRange_inSmallChunksFindsEverything() {
+        repeat(20_000) { store.row(it, listOf(SheetCell(0, "row $it"), SheetCell(1, if (it % 997 == 0) "Нашлось" else "-"))) }
+        store.finish()
+        val end = store.state.value.publishedBytes
+        val found = ArrayList<CellPosition>()
+        var offset = 0L
+        while (offset < end) {
+            val chunk = store.searchRange("НАШЛОСЬ", 100, offset, minOf(end, offset + 1_000))
+            found += chunk.matches
+            offset = chunk.nextOffset
+        }
+        assertEquals((0 until 20_000 step 997).map { CellPosition(it, 1) }, found)
     }
 
     @Test

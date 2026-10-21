@@ -224,8 +224,26 @@ class ViewerViewModel(
     fun search(query: String) {
         when (val state = _uiState.value) {
             is ViewerUiState.Pdf -> state.session.search(query, fromPage = position.value.index)
-            is ViewerUiState.Sheet -> state.session.search(query)
+            is ViewerUiState.Sheet -> {
+                state.session.search(query)
+                logSearchTime(state.session, query.trim())
+            }
             else -> Unit
+        }
+    }
+
+    /** Время поиска по листу для замеров: до первого совпадения и до конца прохода. */
+    private fun logSearchTime(session: SheetSession, query: String) {
+        if (query.isEmpty()) return
+        val startedAt = clock()
+        viewModelScope.launch {
+            val first = session.search.first { it.query != query || it.matches.isNotEmpty() || !it.inProgress }
+            if (first.query != query) return@launch
+            if (first.matches.isNotEmpty()) reportOpenTime("поиск «$query»: первое совпадение за ${clock() - startedAt} мс")
+            val done = session.search.first { it.query != query || !it.inProgress }
+            if (done.query == query) {
+                reportOpenTime("поиск «$query»: ${done.matches.size} совпадений за ${clock() - startedAt} мс")
+            }
         }
     }
 
