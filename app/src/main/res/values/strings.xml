@@ -1,0 +1,134 @@
+<resources>
+    <string name="app_name">DocFlow Reader</string>
+
+    <string name="tab_library">Библиотека</string>
+    <string name="tab_recent">Недавние</string>
+    <string name="action_back">Назад</string>
+    <string name="action_add">Добавить</string>
+    <string name="action_add_folder">Добавить папку</string>
+    <string name="action_add_files">Добавить файлы</string>
+    <string name="action_manage_folders">Папки библиотеки</string>
+    <string name="action_remove">Убрать</string>
+
+    <string name="library_empty_title">Библиотека пуста</string>
+    <string name="library_empty_message">Добавьте папку с документами — приложение найдёт в ней PDF, Word, Excel и TXT и будет обновлять список автоматически.</string>
+    <string name="library_downloads_hint">Папку «Загрузки» целиком Android 11+ выбрать не даёт: выберите вложенную папку или добавьте файлы из неё вручную.</string>
+    <string name="library_no_documents_title">Документы не найдены</string>
+    <string name="library_no_documents_message">В выбранных папках нет поддерживаемых файлов. Потяните список вниз, чтобы пересканировать.</string>
+    <string name="library_folders_title">Папки библиотеки</string>
+    <string name="library_single_files">Отдельные файлы</string>
+    <string name="library_folders_empty">Папки ещё не добавлены.</string>
+
+    <string name="message_folder_access_failed">Не удалось получить доступ к папке</string>
+    <string name="message_no_supported_files">Среди выбранных файлов нет поддерживаемых форматов</string>
+    <plurals name="message_files_added">
+        <item quantity="one">Добавлен %d файл</item>
+        <item quantity="few">Добавлено %d файла</item>
+        <item quantity="many">Добавлено %d файлов</item>
+        <item quantity="other">Добавлено %d файла</item>
+    </plurals>
+    <string name="message_folders_unavailable">Нет доступа к папкам: %s. Добавьте их заново.</string>
+
+    <string name="library_search_hint">Поиск по имени</string>
+    <string name="action_search_library">Поиск по имени</string>
+    <string name="action_sort">Сортировка</string>
+    <string name="sort_date">По дате</string>
+    <string name="sort_name">По имени</string>
+    <string name="sort_size">По размеру</string>
+    <string name="sort_ascending">по возрастанию</string>
+    <string name="sort_descending">по убыванию</string>
+    <string name="action_view_grid">Показать сеткой</string>
+    <string name="action_view_list">Показать списком</string>
+    <string name="filter_all">Все</string>
+    <string name="library_nothing_found_title">Ничего не найдено</string>
+    <string name="library_nothing_found_message">Измените запрос или фильтр по типу.</string>
+
+    <string name="action_document_menu">Действия с файлом</string>
+    <string name="action_share">Поделиться</string>
+    <string name="action_rename">Переименовать</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_remove_from_recent">Убрать из недавних</string>
+    <string name="share_chooser_title">Поделиться документом</string>
+    <string name="rename_title">Переименовать файл</string>
+    <string name="rename_label">Имя файла</string>
+    <string name="rename_invalid">Имя не должно быть пустым и содержать символы \\ / : * ? \" &lt; &gt; |</string>
+    <string name="delete_title">Удалить файл?</string>
+    <string name="delete_message">«%s» будет удалён с устройства. Это действие нельзя отменить.</string>
+    <string name="message_rename_failed">Не удалось переименовать: файл с таким именем уже есть или приложение-источник не разрешает изменения</string>
+    <string name="message_delete_failed">Не удалось удалить файл: приложение-источник не разрешает изменения</string>
+    <string name="message_deleted">Файл «%s» удалён</string>
+    <string name="message_share_failed">Нет приложений, через которые можно поделиться файлом</string>
+
+    <string name="recent_empty_title">Пока ничего не открыто</string>
+    <string name="recent_empty_message">Здесь появятся документы, которые вы открывали.</string>
+
+    <string name="incoming_opening">Открытие файла…</string>
+    <string name="incoming_unsupported">Формат файла «%s» не поддерживается</string>
+    <string name="incoming_unsupported_unknown">Формат файла не поддерживается</string>
+    <string name="incoming_failed">Не удалось открыть файл</string>
+
+    <string name="action_bookmark_add">Добавить закладку</string>
+    <string name="action_bookmark_remove">Удалить закладку</string>
+    <string name="action_bookmarks">Закладки</string>
+    <string name="action_reader_theme">Тема оформления</string>
+    <string name="reader_theme_light">Светлая</string>
+    <string name="reader_theme_dark">Тёмная</string>
+    <string name="reader_theme_sepia">Сепия</string>
+    <string name="bookmarks_title">Закладки</string>
+    <string name="bookmarks_empty">Закладок пока нет. Нажмите значок закладки на верхней панели, чтобы отметить текущее место.</string>
+    <string name="position_paragraph">Абзац %d</string>
+    <string name="position_page">Страница %d</string>
+    <string name="position_sheet_row">%1$s, строка %2$d</string>
+
+    <string name="action_more">Ещё</string>
+    <string name="sheet_freeze_header">Закрепить первую строку</string>
+    <string name="sheet_empty">Лист пуст</string>
+    <string name="sheet_read_error">Не удалось прочитать лист.</string>
+    <string name="sheet_read_partial">Лист прочитан не полностью: файл повреждён.</string>
+
+    <string name="action_search">Поиск в документе</string>
+    <string name="action_close_search">Закрыть поиск</string>
+    <string name="search_hint">Найти в документе</string>
+    <string name="search_previous">Предыдущее совпадение</string>
+    <string name="search_next">Следующее совпадение</string>
+    <string name="search_count">%1$d из %2$d</string>
+    <!-- Поиск ещё идёт: совпадений может стать больше. -->
+    <string name="search_count_partial">%1$d из %2$d…</string>
+    <string name="search_in_progress">Поиск…</string>
+    <string name="search_no_results">Не найдено</string>
+
+    <string name="pdf_page_counter">%1$d / %2$d</string>
+    <string name="pdf_go_to_page_title">Перейти к странице</string>
+    <string name="pdf_go_to_page_hint">Номер страницы (1–%d)</string>
+    <string name="action_go">Перейти</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="drawer_tab_contents">Оглавление</string>
+    <string name="drawer_tab_bookmarks">Закладки</string>
+    <string name="action_contents_and_bookmarks">Оглавление и закладки</string>
+
+    <string name="pdf_password_title">Документ защищён паролем</string>
+    <string name="pdf_password_message">Введите пароль, чтобы открыть файл.</string>
+    <string name="pdf_password_wrong">Неверный пароль</string>
+    <string name="pdf_password_hint">Пароль</string>
+    <string name="action_open">Открыть</string>
+
+    <string name="action_text_settings">Оформление текста</string>
+    <string name="settings_title">Оформление текста</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_font">Шрифт</string>
+    <string name="settings_font_size">Размер шрифта</string>
+    <string name="settings_line_spacing">Межстрочный интервал</string>
+    <string name="settings_preview">Съешь же ещё этих мягких французских булок, да выпей чаю. Так будет выглядеть текст документа.</string>
+    <string name="font_sans">Обычный</string>
+    <string name="font_serif">С засечками</string>
+    <string name="font_mono">Моно</string>
+
+    <string name="viewer_too_large">Документ слишком большой для просмотра на этом устройстве.</string>
+    <string name="viewer_unavailable">Файл недоступен: он удалён, перемещён или доступ к нему отозван.</string>
+    <string name="viewer_read_error">Не удалось прочитать файл.</string>
+
+    <string name="category_pdf">PDF</string>
+    <string name="category_word">Word</string>
+    <string name="category_spreadsheet">Excel</string>
+    <string name="category_text">TXT</string>
+</resources>
