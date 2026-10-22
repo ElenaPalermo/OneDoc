@@ -10,8 +10,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-# R8 переносит часть классов из пакетов packageScope в корневой пакет. Для частей
-# фасадов Kotlin (`SequencesKt___SequencesJvmKt` и т. п.) это ломает доступ к их
-# package-private суперклассам: release падал при запуске с IllegalAccessError.
-# Имена пакетов сохраняем — классы по-прежнему сжимаются и переименовываются.
--keeppackagenames kotlin.**,kotlinx.**,androidx.**
+# R8 переносит часть классов в корневой пакет. Для частей фасадов Kotlin
+# (`SequencesKt___SequencesJvmKt` и т. п.) это ломало доступ к их package-private суперклассам:
+# release падал при запуске с IllegalAccessError. Имена пакетов сохраняем для всего кода —
+# классы по-прежнему сжимаются и переименовываются.
+-keeppackagenames
