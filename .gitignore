@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Логи падений JVM (Gradle-демон)
+hs_err_pid*.log
