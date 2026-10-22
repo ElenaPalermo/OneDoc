@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Чужой провайдер, как у почты или мессенджера: отдаёт файлы из assets тестового APK
+             без постоянного доступа, поэтому приложение должно скопировать вложение к себе. -->
+        <provider
+            android:name="com.example.fileopener.incoming.AssetAttachmentProvider"
+            android:authorities="com.example.fileopener.test.attachments"
+            android:exported="true" />
+    </application>
+
+</manifest>
