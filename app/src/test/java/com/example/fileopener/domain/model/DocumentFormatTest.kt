@@ -34,4 +34,13 @@ class DocumentFormatTest {
         assertEquals(DocumentFormat.PDF, DocumentFormat.detect("attachment", "application/pdf"))
         assertNull(DocumentFormat.detect(null, "application/octet-stream"))
     }
+
+    @Test
+    fun fileName_addsExtensionOnlyWhenMissing() {
+        assertEquals("big.pdf", DocumentFormat.PDF.fileName("big"))
+        assertEquals("31.xlsx", DocumentFormat.XLSX.fileName("31"))
+        assertEquals("Report.PDF", DocumentFormat.PDF.fileName("Report.PDF"))
+        assertEquals("data.bin.pdf", DocumentFormat.PDF.fileName("data.bin"))
+        assertEquals("txt.txt", DocumentFormat.TXT.fileName(null))
+    }
 }

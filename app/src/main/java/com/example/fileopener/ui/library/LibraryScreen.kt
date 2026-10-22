@@ -1,5 +1,6 @@
 package com.example.fileopener.ui.library
 
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -108,12 +109,15 @@ private fun LibraryContent(
                 modifier = it,
             ) {
                 AddButtons(pickers)
-                Text(
-                    stringResource(R.string.library_downloads_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
+                // До Android 11 «Загрузки» выбираются как любая папка.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Text(
+                        stringResource(R.string.library_downloads_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         }
 

@@ -46,6 +46,11 @@ class SheetViewerZoomTest {
         assertTrue("Таблица не открылась", device.wait(Until.hasObject(By.text("Товар 1")), OPEN_TIMEOUT_MS))
 
         val root = device.findObject(By.pkg(app.packageName).depth(0))
+        // Жест — только по сетке: на низком экране (720×1280) крайние точки щипка иначе попадают
+        // на верхнюю панель, и до сетки доходит один палец. Боковые отступы не нулевые:
+        // точка на самом краю (x = ширине экрана) лежит за экраном и отбрасывается.
+        val marginX = device.displayWidth / 10
+        root.setGestureMargins(marginX, device.displayHeight / 4, marginX, device.displayHeight / 8)
         root.pinchOpen(PINCH_PERCENT)
         // Ждём перекладки сетки и сохранения позиции (задержка 1 с).
         Thread.sleep(SETTLE_MS)

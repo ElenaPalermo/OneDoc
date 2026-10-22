@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
@@ -106,13 +107,17 @@ class SafDocumentStorage(context: Context) : DocumentStorage {
             resolver.query(parsed, null, null, null, null)?.use { cursor ->
                 // MediaProvider без прав не бросает исключение, а возвращает пустой результат.
                 if (!cursor.moveToFirst()) return@use QueryResult.Inaccessible
-                val name = cursor.stringColumn(OpenableColumns.DISPLAY_NAME) ?: parsed.lastPathSegment
+                // MediaStore на Android 8 отдаёт пустой DISPLAY_NAME (`content://media/external/file/N`),
+                // но заполняет TITLE — имя без расширения.
+                val name = cursor.stringColumn(OpenableColumns.DISPLAY_NAME)
+                    ?: cursor.stringColumn(MediaStore.MediaColumns.TITLE)
+                    ?: parsed.lastPathSegment
                 val mimeType = runCatching { resolver.getType(parsed) }.getOrNull() ?: mimeTypeHint
                 val format = DocumentFormat.detect(name, mimeType) ?: return@use QueryResult.UnsupportedFormat(name)
                 QueryResult.Found(
                     DocumentItem(
                         uri = uri,
-                        name = name ?: format.name.lowercase(),
+                        name = format.fileName(name),
                         format = format,
                         sizeBytes = cursor.longColumn(OpenableColumns.SIZE) ?: 0L,
                         lastModified = cursor.longColumn(Document.COLUMN_LAST_MODIFIED) ?: 0L,

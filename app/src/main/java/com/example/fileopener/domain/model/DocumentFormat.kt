@@ -29,6 +29,15 @@ enum class DocumentFormat(
     ),
     TXT(DocumentCategory.TEXT, setOf("txt"), setOf("text/plain"));
 
+    /**
+     * Имя файла с расширением этого формата. Нужно, когда формат определён по MIME, а имени нет
+     * или в нём нет расширения: копия вложения во внутреннем хранилище опознаётся только по имени.
+     */
+    fun fileName(name: String?): String {
+        val base = name?.takeIf { it.isNotBlank() } ?: this.name.lowercase()
+        return if (fromFileName(base) == this) base else "$base.${extensions.first()}"
+    }
+
     companion object {
         fun fromFileName(fileName: String): DocumentFormat? {
             val extension = fileName.substringAfterLast('.', missingDelimiterValue = "").lowercase()
