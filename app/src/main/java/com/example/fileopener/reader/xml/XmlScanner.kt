@@ -100,6 +100,17 @@ class XmlScanner private constructor(private val input: InputStream) {
         return if (i < 0) null else decode(attributes[i + 2], attributes[i + 3], entities = true)
     }
 
+    /**
+     * Номер значения атрибута [name] в [values] — сравнение байтов, без создания строки;
+     * `-1`, если атрибута нет или значение другое.
+     */
+    fun attrIndexOf(name: ByteArray, values: Array<ByteArray>): Int {
+        val i = attributeIndex(name)
+        if (i < 0) return -1
+        for (v in values.indices) if (rangeEquals(attributes[i + 2], attributes[i + 3], values[v])) return v
+        return -1
+    }
+
     /** Целое неотрицательное значение атрибута; [missing] — если атрибута нет или это не число. */
     fun attrInt(name: ByteArray, missing: Int): Int {
         val i = attributeIndex(name)

@@ -46,7 +46,8 @@ data class CellPosition(val row: Int, val column: Int)
  * а первые строки видны до окончания разбора.
  *
  * Запись идёт из одного потока (парсер), чтение — из любых. Новые строки становятся доступны
- * для чтения после публикации ([state]): сначала после первых [FIRST_PUBLISH_ROWS], затем пачками.
+ * для чтения после публикации ([state]): сначала после первых [FIRST_PUBLISH_ROWS], затем пачками
+ * не чаще раза в [PUBLISH_INTERVAL_NANOS] — каждая публикация перекомпоновывает сетку.
  *
  * Формат записи строки: varint индекс, varint число ячеек, затем на ячейку —
  * varint колонка, varint стиль, байт [CellKind], строка в modified UTF-8.
@@ -65,6 +66,7 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
     private var columnCount = 0
     private var rowsSincePublish = 0
     private var published = false
+    private var lastPublishNanos = 0L
 
     private var expectedRows = 0
     private var defaultWidth: Float? = null
@@ -97,7 +99,9 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
 
     override fun row(index: Int, cells: List<SheetCell>) {
         if (index !in 0 until MAX_SHEET_ROWS) return
-        val visible = cells.filter { it.column in 0 until MAX_SHEET_COLUMNS }
+        // Копия списка — только если есть колонки за пределами листа (почти никогда).
+        val inSheet = { cell: SheetCell -> cell.column in 0 until MAX_SHEET_COLUMNS }
+        val visible = if (cells.all(inSheet)) cells else cells.filter(inSheet)
         if (visible.isEmpty()) return
 
         rowBuffer.reset()
@@ -124,7 +128,13 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
         sample(visible)
 
         rowsSincePublish++
-        if (rowsSincePublish >= if (published) PUBLISH_ROWS else FIRST_PUBLISH_ROWS) publish(complete = false)
+        if (!published) {
+            if (rowsSincePublish >= FIRST_PUBLISH_ROWS) publish(complete = false)
+        } else if (rowsSincePublish % PUBLISH_ROWS == 0 &&
+            System.nanoTime() - lastPublishNanos >= PUBLISH_INTERVAL_NANOS
+        ) {
+            publish(complete = false)
+        }
     }
 
     /** Разбор окончен: публикуются все строки и объединённые ячейки. */
@@ -145,10 +155,14 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
         output.flush()
         rowsSincePublish = 0
         published = true
+        lastPublishNanos = System.nanoTime()
+        // Тот же массив, если ширины не изменились: сетка не пересобирает геометрию колонок.
+        val previousWidths = _state.value.columnWidths
+        val widths = columnWidths().takeUnless { it.contentEquals(previousWidths) } ?: previousWidths
         _state.value = SheetStoreState(
             rowCount = rowCount,
             columnCount = columnCount,
-            columnWidths = columnWidths(),
+            columnWidths = widths,
             merges = if (complete) mergesByRow() else emptyMap(),
             complete = complete,
             expectedRowCount = expectedRows,
@@ -460,6 +474,7 @@ class SheetRowStore(private val file: File) : SheetSink, Closeable {
         const val INITIAL_ROWS = 1024
         const val FIRST_PUBLISH_ROWS = 100
         const val PUBLISH_ROWS = 5_000
+        const val PUBLISH_INTERVAL_NANOS = 250_000_000L
         const val AUTO_WIDTH_PADDING = 1
         const val MIN_AUTO_WIDTH = 4f
         const val MAX_AUTO_WIDTH = 40f

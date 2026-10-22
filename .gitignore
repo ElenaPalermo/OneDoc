@@ -16,3 +16,6 @@ local.properties
 
 # Логи падений JVM (Gradle-демон)
 hs_err_pid*.log
+
+# Данные сессий Kotlin-компилятора
+.kotlin/

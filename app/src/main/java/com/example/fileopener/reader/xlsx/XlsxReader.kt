@@ -164,13 +164,14 @@ private class SheetParser(
                 if (!scanner.isName(C)) return@forEachChild
                 val column = scanner.attrColumn(R).takeIf { it >= 0 } ?: (previousColumn + 1)
                 previousColumn = column
-                parseCell(column, scanner.attrInt(S, 0), scanner.attr(T))?.let(cells::add)
+                parseCell(column, scanner.attrInt(S, 0), scanner.attrIndexOf(T, CELL_TYPES))?.let(cells::add)
             }
             if (cells.isNotEmpty()) sink.row(rowIndex, ArrayList(cells))
         }
     }
 
-    private fun parseCell(column: Int, style: Int, type: String?): SheetCell? {
+    /** [type] — номер типа в [CELL_TYPES], `-1` — число (атрибута `t` нет). */
+    private fun parseCell(column: Int, style: Int, type: Int): SheetCell? {
         var value: String? = null
         var inline: String? = null
         scanner.forEachChild {
@@ -190,17 +191,29 @@ private class SheetParser(
             }
         }
         val raw = value
-        val (text, kind) = when (type) {
-            "s" -> (raw?.trim()?.toIntOrNull()?.let(sharedStrings::getOrNull) ?: "") to CellKind.TEXT
-            "inlineStr" -> (inline ?: raw.orEmpty()) to CellKind.TEXT
-            "str" -> raw.orEmpty() to CellKind.TEXT
-            "b" -> (if (raw == null) "" else formatter.formatBoolean(raw.trim() == "1")) to CellKind.BOOLEAN
-            "e" -> raw.orEmpty() to CellKind.ERROR
-            "d" -> raw.orEmpty() to CellKind.NUMBER
+        // Без Pair: на миллионах ячеек каждый лишний объект — это работа сборщика мусора во время прокрутки.
+        var kind = CellKind.TEXT
+        val text = when (type) {
+            TYPE_SHARED -> raw?.trim()?.toIntOrNull()?.let(sharedStrings::getOrNull) ?: ""
+            TYPE_INLINE -> inline ?: raw.orEmpty()
+            TYPE_STR -> raw.orEmpty()
+            TYPE_BOOLEAN -> {
+                kind = CellKind.BOOLEAN
+                if (raw == null) "" else formatter.formatBoolean(raw.trim() == "1")
+            }
+            TYPE_ERROR -> {
+                kind = CellKind.ERROR
+                raw.orEmpty()
+            }
+            TYPE_DATE -> {
+                kind = CellKind.NUMBER
+                raw.orEmpty()
+            }
             else -> {
                 val formatId = styles.formatId(style)
                 val number = raw?.let { formatter.formatNumberText(it.trim(), formatId, styles.formatCode(formatId), date1904) }
-                if (number == null) raw.orEmpty() to CellKind.TEXT else number to CellKind.NUMBER
+                if (number != null) kind = CellKind.NUMBER
+                number ?: raw.orEmpty()
             }
         }
         // Пустую ячейку храним только ради заливки (цветные шапки и полосы таблиц).
@@ -235,5 +248,14 @@ private class SheetParser(
         val R = "r".toByteArray()
         val S = "s".toByteArray()
         val T = "t".toByteArray()
+
+        /** Значения атрибута `t` ячейки; номера — константы `TYPE_*`. */
+        val CELL_TYPES = arrayOf("s", "inlineStr", "str", "b", "e", "d").map { it.toByteArray() }.toTypedArray()
+        const val TYPE_SHARED = 0
+        const val TYPE_INLINE = 1
+        const val TYPE_STR = 2
+        const val TYPE_BOOLEAN = 3
+        const val TYPE_ERROR = 4
+        const val TYPE_DATE = 5
     }
 }

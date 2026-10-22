@@ -68,6 +68,14 @@ class SheetRowStoreTest {
     }
 
     @Test
+    fun columnWidths_sameArrayWhenUnchanged() {
+        repeat(100) { store.row(it, listOf(SheetCell(0, "abc"))) }
+        val first = store.state.value.columnWidths
+        store.finish()
+        assertTrue("сетка не пересобирает геометрию колонок", first === store.state.value.columnWidths)
+    }
+
+    @Test
     fun columnWidths_defaultWidthReplacesAutoSize() {
         store.defaultColumnWidth(8.43f)
         store.row(0, listOf(SheetCell(0, "очень длинный текст, который Excel показал бы поверх соседей")))
