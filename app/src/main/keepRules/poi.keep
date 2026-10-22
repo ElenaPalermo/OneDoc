@@ -1,0 +1,15 @@
+# Apache POI (HSSF для .xls, HWPF для .doc) и его зависимости.
+# Сейчас packageScope не включает эти пакеты, и R8 их не трогает; правила нужны, если область
+# оптимизации расширить на весь код.
+
+# Ссылки на классы, которых нет на Android: java.awt — рисование и вывод в JSON в POI
+# (через них наш код не ходит), OSGi и аннотации сборки — в log4j-api.
+-dontwarn java.awt.**
+-dontwarn org.osgi.**
+-dontwarn aQute.bnd.annotation.**
+-dontwarn edu.umd.cs.findbugs.annotations.**
+
+# Записи HSSF, HWPF и Escher POI создаёт через ссылки на конструкторы — R8 их видит, правила не нужны.
+# log4j-api (через него пишет логи POI) ищет провайдер, фабрики сообщений, карты контекста
+# и источники настроек по имени класса и через ServiceLoader — R8 этого не видит.
+-keep class org.apache.logging.log4j.** { *; }
