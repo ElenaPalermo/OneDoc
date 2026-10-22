@@ -59,6 +59,7 @@ import com.example.fileopener.ui.common.DeleteDocumentDialog
 import com.example.fileopener.ui.common.DocumentItemSaver
 import com.example.fileopener.ui.common.DocumentMenuItem
 import com.example.fileopener.ui.common.RenameDocumentDialog
+import com.example.fileopener.ui.common.openDocumentWith
 import com.example.fileopener.ui.common.shareDocument
 import com.example.fileopener.ui.library.LibraryFoldersSheet
 import com.example.fileopener.ui.library.LibraryMessage
@@ -133,6 +134,13 @@ fun HomeScreen(
             DocumentMenuItem(R.string.action_share, R.drawable.ic_share) {
                 if (!context.shareDocument(document)) {
                     scope.launch { snackbarHostState.showSnackbar(resources.getString(R.string.message_share_failed)) }
+                }
+            },
+        )
+        add(
+            DocumentMenuItem(R.string.action_open_with, R.drawable.ic_open_in_new) {
+                if (!context.openDocumentWith(document)) {
+                    scope.launch { snackbarHostState.showSnackbar(resources.getString(R.string.message_open_with_failed)) }
                 }
             },
         )

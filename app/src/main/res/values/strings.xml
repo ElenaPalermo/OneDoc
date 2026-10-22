@@ -45,10 +45,12 @@
 
     <string name="action_document_menu">Действия с файлом</string>
     <string name="action_share">Поделиться</string>
+    <string name="action_open_with">Открыть с помощью</string>
     <string name="action_rename">Переименовать</string>
     <string name="action_delete">Удалить</string>
     <string name="action_remove_from_recent">Убрать из недавних</string>
     <string name="share_chooser_title">Поделиться документом</string>
+    <string name="open_with_chooser_title">Открыть в приложении</string>
     <string name="rename_title">Переименовать файл</string>
     <string name="rename_label">Имя файла</string>
     <string name="rename_invalid">Имя не должно быть пустым и содержать символы \\ / : * ? \" &lt; &gt; |</string>
@@ -58,6 +60,7 @@
     <string name="message_delete_failed">Не удалось удалить файл: приложение-источник не разрешает изменения</string>
     <string name="message_deleted">Файл «%s» удалён</string>
     <string name="message_share_failed">Нет приложений, через которые можно поделиться файлом</string>
+    <string name="message_open_with_failed">Нет других приложений, которые открывают этот тип файлов</string>
 
     <string name="recent_empty_title">Пока ничего не открыто</string>
     <string name="recent_empty_message">Здесь появятся документы, которые вы открывали.</string>

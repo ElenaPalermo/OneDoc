@@ -37,23 +37,43 @@ import java.io.File
 
 /** Открывает системное меню «Поделиться» для файла; `false`, если отправить некуда. */
 fun Context.shareDocument(document: DocumentItem): Boolean {
-    val source = document.uri.toUri()
-    // Копии вложений лежат во внутреннем хранилище: чужому приложению их отдаём через FileProvider.
-    val uri: Uri = if (source.scheme == ContentResolver.SCHEME_FILE) {
-        FileProvider.getUriForFile(this, "$packageName.files", File(source.path ?: return false))
-    } else {
-        source
-    }
+    val uri = externalUri(document) ?: return false
     val send = Intent(Intent.ACTION_SEND)
         .setType(document.format.mimeTypes.first())
         .putExtra(Intent.EXTRA_STREAM, uri)
         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     send.clipData = ClipData.newUri(contentResolver, document.name, uri)
+    return startChooserWithoutSelf(send, R.string.share_chooser_title)
+}
+
+/** Предлагает открыть файл в другом приложении; `false`, если других просмотрщиков нет. */
+fun Context.openDocumentWith(document: DocumentItem): Boolean {
+    val uri = externalUri(document) ?: return false
+    val view = Intent(Intent.ACTION_VIEW)
+        .setDataAndType(uri, document.format.mimeTypes.first())
+        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    return startChooserWithoutSelf(view, R.string.open_with_chooser_title)
+}
+
+/** URI, который можно отдать чужому приложению. */
+private fun Context.externalUri(document: DocumentItem): Uri? {
+    val source = document.uri.toUri()
+    // Копии вложений лежат во внутреннем хранилище: чужому приложению их отдаём через FileProvider.
+    return if (source.scheme == ContentResolver.SCHEME_FILE) {
+        FileProvider.getUriForFile(this, "$packageName.files", File(source.path ?: return null))
+    } else {
+        source
+    }
+}
+
+private fun Context.startChooserWithoutSelf(intent: Intent, titleRes: Int): Boolean {
+    // Себе отправлять бессмысленно: приложение само принимает VIEW и SEND с этими типами.
+    val self = ComponentName(this, MainActivity::class.java)
+    // EXCLUDE_COMPONENTS не учитывается, если подходит только наше приложение: тогда выбора нет.
+    val others = packageManager.queryIntentActivities(intent, 0).filter { it.activityInfo.packageName != packageName }
+    if (others.isEmpty()) return false
     return try {
-        val chooser = Intent.createChooser(send, getString(R.string.share_chooser_title))
-            // Себе отправлять бессмысленно: приложение принимает SEND с этими типами.
-            .putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, arrayOf(ComponentName(this, MainActivity::class.java)))
-        startActivity(chooser)
+        startActivity(Intent.createChooser(intent, getString(titleRes)).putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, arrayOf(self)))
         true
     } catch (e: ActivityNotFoundException) {
         false
