@@ -49,7 +49,11 @@ class FakeDocumentStorage : DocumentStorage {
     var persistAllowed = true
 
     override suspend fun scanFolder(treeUri: String) = trees[treeUri]
-    override suspend fun folderDisplayName(treeUri: String) = treeUri.substringAfterLast('/')
+    /** Имена папок от провайдера; `null` в значении — провайдер имени не отдаёт. */
+    val displayNames = mutableMapOf<String, String?>()
+
+    override suspend fun folderDisplayName(treeUri: String) =
+        if (treeUri in displayNames) displayNames[treeUri] else treeUri.substringAfterLast('/')
     override suspend fun resolve(uri: String, mimeTypeHint: String?) = resolvable[uri]
     override suspend fun importIncoming(uri: String, mimeTypeHint: String?): ImportResult =
         resolvable[uri]?.let { ImportResult.Success(it) } ?: ImportResult.Failed

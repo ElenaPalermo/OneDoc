@@ -14,9 +14,16 @@ class ScanLibraryUseCase(
 ) {
     suspend operator fun invoke(): List<LibraryFolder> = coroutineScope {
         libraryRepository.getFolders()
-            .map { folder -> async { folder.takeUnless { scanFolder(it) } } }
+            .map { folder -> async { folder.takeUnless { scanFolder(it.withReadableName()) } } }
             .awaitAll()
             .filterNotNull()
+    }
+
+    /** Чинит имя папки, сохранённое как URI (раньше так бывало с корнем «Загрузок» на Android 8). */
+    private suspend fun LibraryFolder.withReadableName(): LibraryFolder {
+        if (!hasUriAsName) return this
+        val name = storage.folderDisplayName(treeUri) ?: LibraryFolder.nameFromTreeUri(treeUri)
+        return copy(displayName = name).also { libraryRepository.addFolder(it) }
     }
 
     /** `false`, если папка недоступна: прежний индекс тогда не трогаем, чтобы список не опустел. */
@@ -41,7 +48,7 @@ class AddLibraryFolderUseCase(
     /** `false`, если не удалось сохранить доступ к папке. */
     suspend operator fun invoke(treeUri: String): Boolean {
         if (!storage.persistAccess(treeUri)) return false
-        val name = storage.folderDisplayName(treeUri) ?: treeUri.substringAfterLast("%3A")
+        val name = storage.folderDisplayName(treeUri) ?: LibraryFolder.nameFromTreeUri(treeUri)
         val folder = LibraryFolder(treeUri, name, addedAt = clock())
         libraryRepository.addFolder(folder)
         scanLibrary.scanFolder(folder)

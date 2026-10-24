@@ -1,5 +1,7 @@
 package com.example.fileopener.domain.model
 
+import java.net.URLDecoder
+
 /**
  * Документ, известный приложению. [uri] — content:// URI с persistable-доступом через SAF
  * либо file:// URI копии во внутреннем хранилище (для вложений из мессенджеров и почты).
@@ -20,9 +22,29 @@ data class LibraryFolder(
 ) {
     val isSingleFiles: Boolean get() = treeUri == SINGLE_FILES_URI
 
+    /** Вместо имени сохранён URI: так старый запасной вариант называл папки, если провайдер не дал имени. */
+    val hasUriAsName: Boolean get() = !isSingleFiles && "://" in displayName
+
     companion object {
         /** Псевдопапка для файлов, добавленных по одному через `OpenMultipleDocuments`. */
         const val SINGLE_FILES_URI = "docflow://single-files"
+
+        private const val DOWNLOADS_AUTHORITY = "com.android.providers.downloads.documents"
+
+        /**
+         * Имя папки по URI дерева — когда провайдер его не отдаёт (корень «Загрузок» на Android 8
+         * возвращает пустой `_display_name`). Берётся последний сегмент пути из идентификатора
+         * документа: `primary:Documents/Work` → `Work`, `raw:/storage/emulated/0/Download` → `Download`.
+         */
+        fun nameFromTreeUri(treeUri: String): String {
+            val encodedId = treeUri.substringAfter("/tree/", "").substringBefore('/')
+            if (encodedId.isEmpty()) return treeUri
+            val documentId = URLDecoder.decode(encodedId, Charsets.UTF_8.name())
+            // Корень «Загрузок» — так называется сама папка в памяти устройства.
+            if (documentId == "downloads" && "://$DOWNLOADS_AUTHORITY/" in treeUri) return "Download"
+            val path = documentId.substringAfter(':').trimEnd('/')
+            return path.substringAfterLast('/').ifEmpty { documentId.substringBefore(':') }
+        }
     }
 }
 

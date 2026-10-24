@@ -61,6 +61,29 @@ class LibraryUseCasesTest {
     }
 
     @Test
+    fun addFolder_withoutProviderName_takesNameFromUri() = runTest {
+        storage.displayNames[DOWNLOADS_TREE] = null
+        storage.trees[DOWNLOADS_TREE] = emptyList()
+
+        AddLibraryFolderUseCase(repository, storage, scan).invoke(DOWNLOADS_TREE)
+
+        assertEquals(listOf("Download"), repository.getFolders().map { it.displayName })
+    }
+
+    @Test
+    fun scan_repairsFolderNameStoredAsUri() = runTest {
+        repository.addFolder(LibraryFolder(DOWNLOADS_TREE, DOWNLOADS_TREE, addedAt = 7))
+        repository.replaceFolderDocuments(DOWNLOADS_TREE, listOf(doc("old.pdf")))
+        storage.displayNames[DOWNLOADS_TREE] = null
+        storage.trees[DOWNLOADS_TREE] = listOf(doc("new.pdf"))
+
+        scan()
+
+        assertEquals(listOf(LibraryFolder(DOWNLOADS_TREE, "Download", addedAt = 7)), repository.getFolders())
+        assertEquals(listOf("new.pdf"), repository.getFolderDocuments(DOWNLOADS_TREE).map { it.name })
+    }
+
+    @Test
     fun addFiles_skipsUnsupportedAndStoresUnderSingleFilesFolder() = runTest {
         val pdf = doc("a.pdf")
         storage.resolvable[pdf.uri] = pdf
@@ -80,5 +103,9 @@ class LibraryUseCasesTest {
         sizeBytes = 1,
         lastModified = 0,
     )
+
+    private companion object {
+        const val DOWNLOADS_TREE = "content://com.android.providers.downloads.documents/tree/downloads"
+    }
 }
 
