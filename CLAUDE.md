@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Язык общения (обязательно)
-Всегда общайся с пользователем на русском языке. На русском пишутся ответы, планы, пояснения, комментарии в коде, KDoc, сообщения коммитов и описания PR. Идентификаторы в коде (классы, функции, переменные, ресурсы) — на английском; строки интерфейса — в `strings.xml` (русская локализация по умолчанию).
+Всегда общайся с пользователем на русском языке. На русском пишутся ответы, планы, пояснения, комментарии в коде, KDoc, сообщения коммитов и описания PR. Идентификаторы в коде (классы, функции, переменные, ресурсы) — на английском; строки интерфейса — в `strings.xml` (русская локализация по умолчанию, переводы — `values-en/`, `values-it/`).
 
 ## Цель проекта
 Приложение **DocFlow Reader** (рабочее название; модуль `:app`, пакет `com.example.fileopener`) — нативный офлайн-просмотрщик документов для Android: PDF, Word (.docx, .doc), Excel (.xlsx, .xls, .csv) и TXT из памяти устройства, почты и мессенджеров. Стек: Kotlin, Jetpack Compose + Material 3, Coroutines, Room, Android Intent Framework. Архитектура: MVVM + Clean Architecture.
@@ -29,6 +29,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `ViewerViewModel` сохраняет позицию с задержкой 1 с, а при `ON_STOP`/`onCleared` — сразу через `AppContainer.applicationScope`. `ReaderSettings.theme == null` означает «по системной теме».
 - Входящие файлы (`ui/incoming/IncomingViewModel`, `SafDocumentStorage.importIncoming`): если провайдер даёт persistable-доступ — храним исходный URI, иначе копируем в `filesDir/incoming/<хэш имени и размера>/` и дальше работаем с `file://` URI. Проверяет `IncomingIntentTest` (VIEW и SEND без MIME-типа): вложение отдаёт `AssetAttachmentProvider` из тестового APK — он на Java, потому что работает в процессе тестового APK без Kotlin stdlib.
 - Отдельные файлы библиотеки хранятся в псевдопапке `LibraryFolder.SINGLE_FILES_URI`.
+- **Язык интерфейса** (ru — `values/`, en — `values-en/`, it — `values-it/`).
+  - Выбор: меню ⋮ главного экрана → «Язык» (`ui/home/LanguageDialog.kt`). Хранение и применение — `data/settings/AppLanguageStore`:
+    - Android 13+ — системный `LocaleManager`; язык меняется и в системных настройках приложения (`generateLocaleConfig` + `res/resources.properties`);
+    - Android 8–12 — `SharedPreferences` (`app_language`), `MainActivity.attachBaseContext` и `recreate()`.
+  - При языке системы без перевода интерфейс русский.
+  - Любая новая строка интерфейса добавляется во все три `strings.xml`; lint `MissingTranslation` это проверяет.
+  - В AAB разделение по языкам отключено (`bundle.language.enableSplit = false`): иначе Play не поставит язык, выбранный в приложении.
+  - Логические значения ячеек — на языке интерфейса (`CellFormatter.formatBoolean`). Даты и числа в списке и таблицах следуют локали по умолчанию.
+  - Проверяет `AppLanguageSwitchTest`: выбор через меню, сохранение для новой Activity, в конце возвращает исходный язык.
 - Проверено на API 26 (Android 8.0, 720×1280): все форматы, библиотека через SAF, меню документа, поворот, инструментальные тесты. MediaStore на Android 8 не заполняет `DISPLAY_NAME` для `content://media/external/file/N` — имя берётся из `TITLE`, а `DocumentFormat.fileName` дописывает расширение (иначе копия вложения без расширения не открывалась). UiAutomator-щипок на низком экране задевает верхнюю панель — в тестах зона жеста ограничена `setGestureMargins`.
 - Проверка на эмуляторе (`Medium_Phone_API_37.0`): в Git Bash для путей `/sdcard/...` в adb нужен `MSYS_NO_PATHCONV=1`; открыть файл как из чужого приложения — `adb shell am start -a android.intent.action.VIEW -t text/plain -d content://media/external/file/<id> --grant-read-uri-permission -n com.example.fileopener/.MainActivity`.
 
@@ -41,7 +50,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **PDF:** переход к странице (ползунок/ввод), интерактивное оглавление, поиск по тексту с подсветкой.
 - **DOCX/DOC/TXT:** reflow под ширину экрана, выбор шрифта и размера, межстрочный интервал.
 - **XLSX/XLS/CSV:** нижние вкладки листов, табличная сетка с форматированием чисел/дат/текста, фиксация строки заголовков, чёткий зум сетки, поиск по ячейкам листа.
-- **UI/UX:** Material Design 3, Dynamic Colors (Android 12+), портрет и ландшафт с перевёрсткой.
+- **UI/UX:** Material Design 3, Dynamic Colors (Android 12+), портрет и ландшафт с перевёрсткой. Интерфейс на русском, английском и итальянском с выбором языка в приложении.
 - **Производительность:** открытие PDF/Excel 50–100 МБ за 2–3 с, без лагов на больших таблицах; ленивая подгрузка и кэширование, контроль RAM.
 - **Хранение:** Room — история, закладки, позиции чтения, папки библиотеки; DataStore — пользовательские настройки.
 

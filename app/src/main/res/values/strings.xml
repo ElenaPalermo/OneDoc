@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DocFlow Reader</string>
+    <string name="app_name" translatable="false">DocFlow Reader</string>
 
     <string name="tab_library">Библиотека</string>
     <string name="tab_recent">Недавние</string>
@@ -100,7 +100,7 @@
     <string name="search_in_progress">Поиск…</string>
     <string name="search_no_results">Не найдено</string>
 
-    <string name="pdf_page_counter">%1$d / %2$d</string>
+    <string name="pdf_page_counter" translatable="false">%1$d / %2$d</string>
     <string name="pdf_go_to_page_title">Перейти к странице</string>
     <string name="pdf_go_to_page_hint">Номер страницы (1–%d)</string>
     <string name="action_go">Перейти</string>
@@ -130,8 +130,16 @@
     <string name="viewer_unavailable">Файл недоступен: он удалён, перемещён или доступ к нему отозван.</string>
     <string name="viewer_read_error">Не удалось прочитать файл.</string>
 
-    <string name="category_pdf">PDF</string>
-    <string name="category_word">Word</string>
-    <string name="category_spreadsheet">Excel</string>
-    <string name="category_text">TXT</string>
+    <string name="category_pdf" translatable="false">PDF</string>
+    <string name="category_word" translatable="false">Word</string>
+    <string name="category_spreadsheet" translatable="false">Excel</string>
+    <string name="category_text" translatable="false">TXT</string>
+
+    <string name="action_language">Язык</string>
+    <string name="language_title">Язык интерфейса</string>
+    <string name="language_system">Как в системе</string>
+    <!-- Названия языков всегда на самом языке, чтобы их можно было найти в любом интерфейсе. -->
+    <string name="language_russian" translatable="false">Русский</string>
+    <string name="language_english" translatable="false">English</string>
+    <string name="language_italian" translatable="false">Italiano</string>
 </resources>

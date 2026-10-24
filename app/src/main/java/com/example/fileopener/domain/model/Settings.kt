@@ -32,3 +32,22 @@ data class LibraryPreferences(
     val sortDescending: Boolean = true,
     val categoryFilter: Set<DocumentCategory> = emptySet(),
 )
+
+/**
+ * Язык интерфейса. [tag] — язык BCP 47, у [SYSTEM] пустой: язык берётся из настроек системы,
+ * а для языков без перевода показываются строки по умолчанию (русские).
+ */
+enum class AppLanguage(val tag: String) {
+    SYSTEM(""),
+    RUSSIAN("ru"),
+    ENGLISH("en"),
+    ITALIAN("it");
+
+    companion object {
+        /** По тегу локали (`en`, `en-US`, `it_IT`); неизвестный или пустой — [SYSTEM]. */
+        fun fromTag(tag: String?): AppLanguage {
+            val language = tag?.substringBefore('-')?.substringBefore('_')?.lowercase()
+            return entries.firstOrNull { it != SYSTEM && it.tag == language } ?: SYSTEM
+        }
+    }
+}

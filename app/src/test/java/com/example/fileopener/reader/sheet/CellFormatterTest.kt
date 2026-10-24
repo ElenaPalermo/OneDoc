@@ -74,6 +74,9 @@ class CellFormatterTest {
     fun booleans_areLocalized() {
         assertEquals("ИСТИНА", ru.formatBoolean(true))
         assertEquals("FALSE", us.formatBoolean(false))
+        assertEquals("VERO", CellFormatter(Locale.ITALY).formatBoolean(true))
+        assertEquals("FALSO", CellFormatter(Locale.ITALY).formatBoolean(false))
+        assertEquals("ИСТИНА", CellFormatter(Locale.GERMANY).formatBoolean(true))
     }
 
     @Test

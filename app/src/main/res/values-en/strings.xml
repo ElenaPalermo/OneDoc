@@ -1,0 +1,130 @@
+<resources>
+    <string name="tab_library">Library</string>
+    <string name="tab_recent">Recent</string>
+    <string name="action_back">Back</string>
+    <string name="action_add">Add</string>
+    <string name="action_add_folder">Add folder</string>
+    <string name="action_add_files">Add files</string>
+    <string name="action_manage_folders">Library folders</string>
+    <string name="action_remove">Remove</string>
+
+    <string name="library_empty_title">Your library is empty</string>
+    <string name="library_empty_message">Add a folder with documents — the app will find PDF, Word, Excel and TXT files in it and keep the list up to date automatically.</string>
+    <string name="library_downloads_hint">Android 11+ does not allow choosing the whole Downloads folder: pick a subfolder or add files from it manually.</string>
+    <string name="library_no_documents_title">No documents found</string>
+    <string name="library_no_documents_message">The selected folders contain no supported files. Pull the list down to rescan.</string>
+    <string name="library_folders_title">Library folders</string>
+    <string name="library_single_files">Individual files</string>
+    <string name="library_folders_empty">No folders added yet.</string>
+
+    <string name="message_folder_access_failed">Could not access the folder</string>
+    <string name="message_no_supported_files">None of the selected files are in a supported format</string>
+    <plurals name="message_files_added">
+        <item quantity="one">%d file added</item>
+        <item quantity="other">%d files added</item>
+    </plurals>
+    <string name="message_folders_unavailable">No access to folders: %s. Add them again.</string>
+
+    <string name="library_search_hint">Search by name</string>
+    <string name="action_search_library">Search by name</string>
+    <string name="action_sort">Sort</string>
+    <string name="sort_date">By date</string>
+    <string name="sort_name">By name</string>
+    <string name="sort_size">By size</string>
+    <string name="sort_ascending">ascending</string>
+    <string name="sort_descending">descending</string>
+    <string name="action_view_grid">Show as grid</string>
+    <string name="action_view_list">Show as list</string>
+    <string name="filter_all">All</string>
+    <string name="library_nothing_found_title">Nothing found</string>
+    <string name="library_nothing_found_message">Change the query or the type filter.</string>
+
+    <string name="action_document_menu">File actions</string>
+    <string name="action_share">Share</string>
+    <string name="action_open_with">Open with</string>
+    <string name="action_rename">Rename</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_remove_from_recent">Remove from recent</string>
+    <string name="share_chooser_title">Share document</string>
+    <string name="open_with_chooser_title">Open in app</string>
+    <string name="rename_title">Rename file</string>
+    <string name="rename_label">File name</string>
+    <string name="rename_invalid">The name must not be empty or contain the characters \\ / : * ? \" &lt; &gt; |</string>
+    <string name="delete_title">Delete file?</string>
+    <string name="delete_message">“%s” will be deleted from the device. This cannot be undone.</string>
+    <string name="message_rename_failed">Could not rename: a file with this name already exists or the source app does not allow changes</string>
+    <string name="message_delete_failed">Could not delete the file: the source app does not allow changes</string>
+    <string name="message_deleted">File “%s” deleted</string>
+    <string name="message_share_failed">No apps available to share the file</string>
+    <string name="message_open_with_failed">No other apps can open this file type</string>
+
+    <string name="recent_empty_title">Nothing opened yet</string>
+    <string name="recent_empty_message">Documents you open will appear here.</string>
+
+    <string name="incoming_opening">Opening file…</string>
+    <string name="incoming_unsupported">The “%s” file format is not supported</string>
+    <string name="incoming_unsupported_unknown">The file format is not supported</string>
+    <string name="incoming_failed">Could not open the file</string>
+
+    <string name="action_bookmark_add">Add bookmark</string>
+    <string name="action_bookmark_remove">Remove bookmark</string>
+    <string name="action_bookmarks">Bookmarks</string>
+    <string name="action_reader_theme">Theme</string>
+    <string name="reader_theme_light">Light</string>
+    <string name="reader_theme_dark">Dark</string>
+    <string name="reader_theme_sepia">Sepia</string>
+    <string name="bookmarks_title">Bookmarks</string>
+    <string name="bookmarks_empty">No bookmarks yet. Tap the bookmark icon in the top bar to mark the current place.</string>
+    <string name="position_paragraph">Paragraph %d</string>
+    <string name="position_page">Page %d</string>
+    <string name="position_sheet_row">%1$s, row %2$d</string>
+
+    <string name="action_more">More</string>
+    <string name="sheet_freeze_header">Freeze first row</string>
+    <string name="sheet_empty">The sheet is empty</string>
+    <string name="sheet_read_error">Could not read the sheet.</string>
+    <string name="sheet_read_partial">The sheet was read only partially: the file is damaged.</string>
+
+    <string name="action_search">Search in document</string>
+    <string name="action_close_search">Close search</string>
+    <string name="search_hint">Find in document</string>
+    <string name="search_previous">Previous match</string>
+    <string name="search_next">Next match</string>
+    <string name="search_count">%1$d of %2$d</string>
+    <string name="search_count_partial">%1$d of %2$d…</string>
+    <string name="search_in_progress">Searching…</string>
+    <string name="search_no_results">Not found</string>
+
+    <string name="pdf_go_to_page_title">Go to page</string>
+    <string name="pdf_go_to_page_hint">Page number (1–%d)</string>
+    <string name="action_go">Go</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="drawer_tab_contents">Contents</string>
+    <string name="drawer_tab_bookmarks">Bookmarks</string>
+    <string name="action_contents_and_bookmarks">Contents and bookmarks</string>
+
+    <string name="pdf_password_title">The document is password-protected</string>
+    <string name="pdf_password_message">Enter the password to open the file.</string>
+    <string name="pdf_password_wrong">Wrong password</string>
+    <string name="pdf_password_hint">Password</string>
+    <string name="action_open">Open</string>
+
+    <string name="action_text_settings">Text appearance</string>
+    <string name="settings_title">Text appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_font">Font</string>
+    <string name="settings_font_size">Font size</string>
+    <string name="settings_line_spacing">Line spacing</string>
+    <string name="settings_preview">The quick brown fox jumps over the lazy dog. This is how the document text will look.</string>
+    <string name="font_sans">Regular</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_mono">Mono</string>
+
+    <string name="viewer_too_large">The document is too large to view on this device.</string>
+    <string name="viewer_unavailable">The file is unavailable: it was deleted, moved, or access to it was revoked.</string>
+    <string name="viewer_read_error">Could not read the file.</string>
+
+    <string name="action_language">Language</string>
+    <string name="language_title">App language</string>
+    <string name="language_system">System default</string>
+</resources>

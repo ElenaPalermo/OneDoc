@@ -36,6 +36,16 @@ android {
     buildFeatures {
         compose = true
     }
+    // locales_config из values-* — язык приложения в системных настройках Android 13+.
+    androidResources {
+        generateLocaleConfig = true
+    }
+    // Язык меняется внутри приложения, поэтому в AAB нужны все языки, а не только язык системы.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 room {

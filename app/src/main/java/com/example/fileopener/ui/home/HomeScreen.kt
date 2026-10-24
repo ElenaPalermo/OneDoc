@@ -1,6 +1,7 @@
 package com.example.fileopener.ui.home
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fileopener.R
+import com.example.fileopener.data.settings.AppLanguageStore
 import com.example.fileopener.domain.model.DocumentItem
 import com.example.fileopener.domain.model.LibraryPreferences
 import com.example.fileopener.domain.model.LibraryViewMode
@@ -89,6 +91,7 @@ fun HomeScreen(
     var selectedTab by rememberSaveable { mutableStateOf(HomeTab.LIBRARY) }
     var showFoldersSheet by rememberSaveable { mutableStateOf(false) }
     var searchActive by rememberSaveable { mutableStateOf(false) }
+    var showLanguageDialog by rememberSaveable { mutableStateOf(false) }
     var renameTarget by rememberSaveable(stateSaver = DocumentItemSaver) { mutableStateOf<DocumentItem?>(null) }
     var deleteTarget by rememberSaveable(stateSaver = DocumentItemSaver) { mutableStateOf<DocumentItem?>(null) }
     val libraryState by libraryViewModel.uiState.collectAsStateWithLifecycle()
@@ -215,6 +218,7 @@ fun HomeScreen(
                                 onManageFolders = { showFoldersSheet = true },
                             )
                         }
+                        if (!(isLibrary && searchActive)) OverflowMenuButton(onLanguage = { showLanguageDialog = true })
                     },
                 )
             },
@@ -274,6 +278,18 @@ fun HomeScreen(
                 actionsViewModel.rename(document, name)
             },
             onDismiss = { renameTarget = null },
+        )
+    }
+    if (showLanguageDialog) {
+        val activity = LocalActivity.current
+        LanguageDialog(
+            current = remember { AppLanguageStore.current(context) },
+            onSelect = { language ->
+                // Закрываем до пересоздания Activity, иначе сохранённое состояние снова откроет диалог.
+                showLanguageDialog = false
+                activity?.let { AppLanguageStore.apply(it, language) }
+            },
+            onDismiss = { showLanguageDialog = false },
         )
     }
     deleteTarget?.let { document ->
@@ -378,6 +394,26 @@ private fun SortMenuButton(preferences: LibraryPreferences, onSort: (SortField) 
                     onClick = { onSort(field) },
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun OverflowMenuButton(onLanguage: () -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(painterResource(R.drawable.ic_more_vert), stringResource(R.string.action_more))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.action_language)) },
+                leadingIcon = { Icon(painterResource(R.drawable.ic_language), contentDescription = null) },
+                onClick = {
+                    expanded = false
+                    onLanguage()
+                },
+            )
         }
     }
 }

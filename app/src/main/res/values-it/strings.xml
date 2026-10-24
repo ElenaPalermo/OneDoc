@@ -1,0 +1,131 @@
+<resources>
+    <string name="tab_library">Libreria</string>
+    <string name="tab_recent">Recenti</string>
+    <string name="action_back">Indietro</string>
+    <string name="action_add">Aggiungi</string>
+    <string name="action_add_folder">Aggiungi cartella</string>
+    <string name="action_add_files">Aggiungi file</string>
+    <string name="action_manage_folders">Cartelle della libreria</string>
+    <string name="action_remove">Rimuovi</string>
+
+    <string name="library_empty_title">La libreria è vuota</string>
+    <string name="library_empty_message">Aggiungi una cartella con documenti: l\'app vi troverà i file PDF, Word, Excel e TXT e aggiornerà l\'elenco automaticamente.</string>
+    <string name="library_downloads_hint">Android 11+ non consente di scegliere l\'intera cartella Download: scegli una sottocartella o aggiungi i file manualmente.</string>
+    <string name="library_no_documents_title">Nessun documento trovato</string>
+    <string name="library_no_documents_message">Le cartelle selezionate non contengono file supportati. Trascina l\'elenco verso il basso per ripetere la scansione.</string>
+    <string name="library_folders_title">Cartelle della libreria</string>
+    <string name="library_single_files">File singoli</string>
+    <string name="library_folders_empty">Nessuna cartella aggiunta.</string>
+
+    <string name="message_folder_access_failed">Impossibile accedere alla cartella</string>
+    <string name="message_no_supported_files">Nessuno dei file selezionati è in un formato supportato</string>
+    <plurals name="message_files_added">
+        <item quantity="one">%d file aggiunto</item>
+        <item quantity="many">%d file aggiunti</item>
+        <item quantity="other">%d file aggiunti</item>
+    </plurals>
+    <string name="message_folders_unavailable">Nessun accesso alle cartelle: %s. Aggiungile di nuovo.</string>
+
+    <string name="library_search_hint">Cerca per nome</string>
+    <string name="action_search_library">Cerca per nome</string>
+    <string name="action_sort">Ordina</string>
+    <string name="sort_date">Per data</string>
+    <string name="sort_name">Per nome</string>
+    <string name="sort_size">Per dimensione</string>
+    <string name="sort_ascending">crescente</string>
+    <string name="sort_descending">decrescente</string>
+    <string name="action_view_grid">Mostra come griglia</string>
+    <string name="action_view_list">Mostra come elenco</string>
+    <string name="filter_all">Tutti</string>
+    <string name="library_nothing_found_title">Nessun risultato</string>
+    <string name="library_nothing_found_message">Modifica la ricerca o il filtro per tipo.</string>
+
+    <string name="action_document_menu">Azioni sul file</string>
+    <string name="action_share">Condividi</string>
+    <string name="action_open_with">Apri con</string>
+    <string name="action_rename">Rinomina</string>
+    <string name="action_delete">Elimina</string>
+    <string name="action_remove_from_recent">Rimuovi dai recenti</string>
+    <string name="share_chooser_title">Condividi documento</string>
+    <string name="open_with_chooser_title">Apri nell\'app</string>
+    <string name="rename_title">Rinomina file</string>
+    <string name="rename_label">Nome del file</string>
+    <string name="rename_invalid">Il nome non può essere vuoto né contenere i caratteri \\ / : * ? \" &lt; &gt; |</string>
+    <string name="delete_title">Eliminare il file?</string>
+    <string name="delete_message">«%s» verrà eliminato dal dispositivo. L\'operazione non può essere annullata.</string>
+    <string name="message_rename_failed">Impossibile rinominare: esiste già un file con questo nome o l\'app di origine non consente modifiche</string>
+    <string name="message_delete_failed">Impossibile eliminare il file: l\'app di origine non consente modifiche</string>
+    <string name="message_deleted">File «%s» eliminato</string>
+    <string name="message_share_failed">Nessuna app disponibile per condividere il file</string>
+    <string name="message_open_with_failed">Nessun\'altra app può aprire questo tipo di file</string>
+
+    <string name="recent_empty_title">Nessun file aperto</string>
+    <string name="recent_empty_message">Qui compariranno i documenti che hai aperto.</string>
+
+    <string name="incoming_opening">Apertura del file…</string>
+    <string name="incoming_unsupported">Il formato del file «%s» non è supportato</string>
+    <string name="incoming_unsupported_unknown">Il formato del file non è supportato</string>
+    <string name="incoming_failed">Impossibile aprire il file</string>
+
+    <string name="action_bookmark_add">Aggiungi segnalibro</string>
+    <string name="action_bookmark_remove">Rimuovi segnalibro</string>
+    <string name="action_bookmarks">Segnalibri</string>
+    <string name="action_reader_theme">Tema</string>
+    <string name="reader_theme_light">Chiaro</string>
+    <string name="reader_theme_dark">Scuro</string>
+    <string name="reader_theme_sepia">Seppia</string>
+    <string name="bookmarks_title">Segnalibri</string>
+    <string name="bookmarks_empty">Ancora nessun segnalibro. Tocca l\'icona del segnalibro nella barra in alto per segnare il punto attuale.</string>
+    <string name="position_paragraph">Paragrafo %d</string>
+    <string name="position_page">Pagina %d</string>
+    <string name="position_sheet_row">%1$s, riga %2$d</string>
+
+    <string name="action_more">Altro</string>
+    <string name="sheet_freeze_header">Blocca la prima riga</string>
+    <string name="sheet_empty">Il foglio è vuoto</string>
+    <string name="sheet_read_error">Impossibile leggere il foglio.</string>
+    <string name="sheet_read_partial">Il foglio è stato letto solo in parte: il file è danneggiato.</string>
+
+    <string name="action_search">Cerca nel documento</string>
+    <string name="action_close_search">Chiudi ricerca</string>
+    <string name="search_hint">Trova nel documento</string>
+    <string name="search_previous">Risultato precedente</string>
+    <string name="search_next">Risultato successivo</string>
+    <string name="search_count">%1$d di %2$d</string>
+    <string name="search_count_partial">%1$d di %2$d…</string>
+    <string name="search_in_progress">Ricerca…</string>
+    <string name="search_no_results">Nessun risultato</string>
+
+    <string name="pdf_go_to_page_title">Vai alla pagina</string>
+    <string name="pdf_go_to_page_hint">Numero di pagina (1–%d)</string>
+    <string name="action_go">Vai</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="drawer_tab_contents">Indice</string>
+    <string name="drawer_tab_bookmarks">Segnalibri</string>
+    <string name="action_contents_and_bookmarks">Indice e segnalibri</string>
+
+    <string name="pdf_password_title">Il documento è protetto da password</string>
+    <string name="pdf_password_message">Inserisci la password per aprire il file.</string>
+    <string name="pdf_password_wrong">Password errata</string>
+    <string name="pdf_password_hint">Password</string>
+    <string name="action_open">Apri</string>
+
+    <string name="action_text_settings">Aspetto del testo</string>
+    <string name="settings_title">Aspetto del testo</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_font">Carattere</string>
+    <string name="settings_font_size">Dimensione del carattere</string>
+    <string name="settings_line_spacing">Interlinea</string>
+    <string name="settings_preview">Ma la volpe, col suo balzo, ha raggiunto il quieto Fido. Così apparirà il testo del documento.</string>
+    <string name="font_sans">Normale</string>
+    <string name="font_serif">Con grazie</string>
+    <string name="font_mono">Mono</string>
+
+    <string name="viewer_too_large">Il documento è troppo grande per essere visualizzato su questo dispositivo.</string>
+    <string name="viewer_unavailable">Il file non è disponibile: è stato eliminato, spostato o l\'accesso è stato revocato.</string>
+    <string name="viewer_read_error">Impossibile leggere il file.</string>
+
+    <string name="action_language">Lingua</string>
+    <string name="language_title">Lingua dell\'app</string>
+    <string name="language_system">Predefinita di sistema</string>
+</resources>

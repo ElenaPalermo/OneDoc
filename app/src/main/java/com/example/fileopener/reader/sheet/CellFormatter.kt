@@ -153,10 +153,11 @@ class CellFormatter(private val locale: Locale = Locale.getDefault()) {
         }
     }
 
-    fun formatBoolean(value: Boolean): String = if (locale.language == "ru") {
-        if (value) "ИСТИНА" else "ЛОЖЬ"
-    } else {
-        if (value) "TRUE" else "FALSE"
+    // Как в Excel — на языке интерфейса; при языке без перевода интерфейс русский, поэтому и значения русские.
+    fun formatBoolean(value: Boolean): String = when (locale.language) {
+        "en" -> if (value) "TRUE" else "FALSE"
+        "it" -> if (value) "VERO" else "FALSO"
+        else -> if (value) "ИСТИНА" else "ЛОЖЬ"
     }
 
     companion object {
