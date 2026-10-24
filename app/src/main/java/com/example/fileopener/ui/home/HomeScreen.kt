@@ -81,6 +81,9 @@ private enum class HomeTab(@param:StringRes val labelRes: Int, @param:DrawableRe
 /** С этой ширины (ландшафт телефона, планшет) вкладки переезжают в боковую навигационную панель. */
 private val NavigationRailMinWidth = 600.dp
 
+/** Уже этой ширины (телефон в портрете) «Вид» и «Папки библиотеки» уходят в меню ⋮, чтобы название помещалось. */
+private val CompactActionsMaxWidth = 480.dp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -101,6 +104,7 @@ fun HomeScreen(
     val resources = LocalResources.current
     val windowWidth = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
     val useRail = windowWidth >= NavigationRailMinWidth
+    val compactActions = windowWidth < CompactActionsMaxWidth
 
     LaunchedEffect(libraryViewModel) {
         libraryViewModel.messages.collect { message ->
@@ -201,7 +205,7 @@ fun HomeScreen(
                         if (isLibrary && searchActive) {
                             LibrarySearchField(libraryState.query, libraryViewModel::setQuery)
                         } else {
-                            // На узких экранах (360 dp) с четырьмя кнопками название иначе переносится на вторую строку.
+                            // При ширине 480–600 dp кнопок в панели много — название иначе переносится на вторую строку.
                             Text(stringResource(R.string.app_name), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
                     },
@@ -216,9 +220,28 @@ fun HomeScreen(
                                 onSort = libraryViewModel::sortBy,
                                 onViewMode = libraryViewModel::setViewMode,
                                 onManageFolders = { showFoldersSheet = true },
+                                compact = compactActions,
                             )
                         }
-                        if (!(isLibrary && searchActive)) OverflowMenuButton(onLanguage = { showLanguageDialog = true })
+                        if (!(isLibrary && searchActive)) {
+                            OverflowMenuButton(
+                                buildList {
+                                    if (isLibrary && compactActions) {
+                                        if (libraryState.totalCount > 0) {
+                                            val grid = libraryState.preferences.viewMode == LibraryViewMode.GRID
+                                            add(
+                                                DocumentMenuItem(
+                                                    if (grid) R.string.action_view_list else R.string.action_view_grid,
+                                                    if (grid) R.drawable.ic_view_list else R.drawable.ic_view_grid,
+                                                ) { libraryViewModel.setViewMode(if (grid) LibraryViewMode.LIST else LibraryViewMode.GRID) },
+                                            )
+                                        }
+                                        add(DocumentMenuItem(R.string.action_manage_folders, R.drawable.ic_folder) { showFoldersSheet = true })
+                                    }
+                                    add(DocumentMenuItem(R.string.action_language, R.drawable.ic_language) { showLanguageDialog = true })
+                                },
+                            )
+                        }
                     },
                 )
             },
@@ -334,6 +357,7 @@ private fun LibraryActions(
     onSort: (SortField) -> Unit,
     onViewMode: (LibraryViewMode) -> Unit,
     onManageFolders: () -> Unit,
+    compact: Boolean,
 ) {
     if (searchActive) {
         IconButton(onClick = onClearQuery) {
@@ -346,6 +370,10 @@ private fun LibraryActions(
             Icon(painterResource(R.drawable.ic_search), stringResource(R.string.action_search_library))
         }
         SortMenuButton(preferences, onSort)
+    }
+    // В компактном режиме «Вид» и «Папки библиотеки» — пункты меню ⋮.
+    if (compact) return
+    if (hasDocuments) {
         val grid = preferences.viewMode == LibraryViewMode.GRID
         IconButton(onClick = { onViewMode(if (grid) LibraryViewMode.LIST else LibraryViewMode.GRID) }) {
             Icon(
@@ -399,21 +427,23 @@ private fun SortMenuButton(preferences: LibraryPreferences, onSort: (SortField) 
 }
 
 @Composable
-private fun OverflowMenuButton(onLanguage: () -> Unit) {
+private fun OverflowMenuButton(items: List<DocumentMenuItem>) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         IconButton(onClick = { expanded = true }) {
             Icon(painterResource(R.drawable.ic_more_vert), stringResource(R.string.action_more))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.action_language)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_language), contentDescription = null) },
-                onClick = {
-                    expanded = false
-                    onLanguage()
-                },
-            )
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(item.labelRes)) },
+                    leadingIcon = { Icon(painterResource(item.iconRes), contentDescription = null) },
+                    onClick = {
+                        expanded = false
+                        item.onClick()
+                    },
+                )
+            }
         }
     }
 }
