@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.fileopener.R
+import com.example.fileopener.domain.model.DocumentCategory
 import com.example.fileopener.domain.model.DocumentItem
 import java.text.DateFormat
 import java.util.Date
@@ -145,7 +146,12 @@ private fun DocumentMenuButton(
 private fun documentDetails(document: DocumentItem, timestamp: Long, withType: Boolean): String {
     val context = LocalContext.current
     return listOfNotNull(
-        if (withType) stringResource(document.format.category.labelRes) else null,
+        // Группа «TXT/XML» объединяет два формата — в строке документа показываем конкретный.
+        when {
+            !withType -> null
+            document.format.category == DocumentCategory.TEXT -> document.format.name
+            else -> stringResource(document.format.category.labelRes)
+        },
         Formatter.formatShortFileSize(context, document.sizeBytes),
         formatDate(timestamp),
     ).joinToString(" · ")
