@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older than API 31
-   See https://developer.android.com/about/versions/12/backup-restore
--->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto Backup на Android 8–11 (на 12+ действует data_extraction_rules.xml).
+     В копию идут только настройки: DataStore (чтение, библиотека) и выбранный язык (Android 8–12).
+     База (библиотека, «Недавние», позиции, закладки) и копии вложений из filesDir/incoming
+     не копируются: они ссылаются на content:// URI и SAF-разрешения, которые на новое устройство
+     не переносятся, — восстановленные записи указывали бы на недоступные файлы. -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <include domain="file" path="datastore/settings.preferences_pb" />
+    <include domain="sharedpref" path="app_language.xml" />
 </full-backup-content>

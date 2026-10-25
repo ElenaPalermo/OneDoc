@@ -7,13 +7,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.fileopener"
+    namespace = "io.doccraftstudio.onedoc"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.fileopener"
+        applicationId = "io.doccraftstudio.onedoc"
         minSdk = 26
         targetSdk = 37
         versionCode = 1

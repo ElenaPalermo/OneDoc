@@ -1,0 +1,54 @@
+package io.doccraftstudio.onedoc.domain.model
+
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Test
+
+class DocumentFormatTest {
+    @Test
+    fun fromFileName_isCaseInsensitive() {
+        assertEquals(DocumentFormat.PDF, DocumentFormat.fromFileName("Report.PDF"))
+        assertEquals(DocumentFormat.XLSX, DocumentFormat.fromFileName("budget.2026.xlsx"))
+    }
+
+    @Test
+    fun fromFileName_unknownOrMissingExtension_returnsNull() {
+        assertNull(DocumentFormat.fromFileName("archive.zip"))
+        assertNull(DocumentFormat.fromFileName("README"))
+    }
+
+    @Test
+    fun fromMimeType_ignoresParameters() {
+        assertEquals(DocumentFormat.TXT, DocumentFormat.fromMimeType("text/plain; charset=utf-8"))
+        assertEquals(DocumentFormat.DOC, DocumentFormat.fromMimeType("application/msword"))
+    }
+
+    @Test
+    fun detect_prefersExtensionOverMime() {
+        assertEquals(DocumentFormat.CSV, DocumentFormat.detect("data.csv", "text/plain"))
+        assertEquals(DocumentFormat.DOCX, DocumentFormat.detect("letter.docx", "application/octet-stream"))
+    }
+
+    @Test
+    fun detect_fallsBackToMime() {
+        assertEquals(DocumentFormat.PDF, DocumentFormat.detect("attachment", "application/pdf"))
+        assertNull(DocumentFormat.detect(null, "application/octet-stream"))
+    }
+
+    @Test
+    fun xml_isDetectedByExtensionAndBothMimeTypes() {
+        assertEquals(DocumentFormat.XML, DocumentFormat.detect("feed.XML", "text/plain"))
+        assertEquals(DocumentFormat.XML, DocumentFormat.fromMimeType("application/xml"))
+        assertEquals(DocumentFormat.XML, DocumentFormat.fromMimeType("text/xml; charset=windows-1251"))
+        assertEquals(DocumentCategory.TEXT, DocumentFormat.XML.category)
+    }
+
+    @Test
+    fun fileName_addsExtensionOnlyWhenMissing() {
+        assertEquals("big.pdf", DocumentFormat.PDF.fileName("big"))
+        assertEquals("31.xlsx", DocumentFormat.XLSX.fileName("31"))
+        assertEquals("Report.PDF", DocumentFormat.PDF.fileName("Report.PDF"))
+        assertEquals("data.bin.pdf", DocumentFormat.PDF.fileName("data.bin"))
+        assertEquals("txt.txt", DocumentFormat.TXT.fileName(null))
+    }
+}

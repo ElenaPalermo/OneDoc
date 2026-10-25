@@ -6,15 +6,15 @@
 - после изменений проходят `:app:assembleDebug`, `:app:testDebugUnitTest`, `:app:lintDebug`;
 - коммит — только по просьбе пользователя, сообщение на русском, прямо в `main`, без push;
 - приложение не удалять (`adb uninstall` и `connectedDebugAndroidTest` запрещены). Ставить через `installDebug` или `adb install -r`, тесты запускать через `am instrument`;
+- к компьютеру бывает подключён личный телефон пользователя (`2139ca7806d2`): `installDebug` ставит на все устройства, поэтому ставить адресно — `ANDROID_SERIAL=<эмулятор>` или `adb -s <эмулятор>`; на телефон — только по просьбе;
 - эмуляторы не перезапускать без просьбы пользователя.
 
 ---
 
 ## ▶ С чего продолжить
-**Задача 0 (выбор языка) выполнена 24.10.2026, изменения не закоммичены.**
-1. Закоммитить по просьбе пользователя. `.idea/deploymentTargetSelector.xml` — локальный файл, не коммитить.
-2. Решить с пользователем, нужно ли что-то из «Хвостов задачи 0».
-3. Затем — задача 1 (подготовка к публикации).
+**Задача 1 (подготовка к публикации) начата 25.10.2026.** Сделано: пакет, название, правила резервного копирования (пункты 1, 2, 8). Дальше — иконка, ключ подписи, AAB, версия, тексты для Play (пункты 3–7). `.idea/deploymentTargetSelector.xml` — локальный файл, не коммитить.
+
+Задача 0 (выбор языка) и поддержка XML выполнены и закоммичены.
 
 **Хвосты задачи 0 (необязательно)**
 - ~~Название обрезается на 360 dp~~ — исправлено 24.10.2026. При ширине < 480 dp «Вид» и «Папки библиотеки» перенесены в меню ⋮ (`CompactActionsMaxWidth` в `HomeScreen.kt`), название видно полностью на 360 и 411 dp. От 480 dp кнопки остаются в панели.
@@ -106,8 +106,8 @@
   - меню документа, диалоги переименования и удаления, снэкбары;
   - просмотрщики PDF, DOCX, TXT, XLSX, CSV: панели, настройки чтения, поиск, оглавление, закладки, переход к странице, пароль PDF, ошибка открытия;
   - даты и размеры в списке.
-- Сохранение после `adb shell am force-stop com.example.fileopener` и повторного запуска.
-- На API 33+ язык меняется в системных «Настройки → Приложения → DocFlow Reader → Язык».
+- Сохранение после `adb shell am force-stop io.doccraftstudio.onedoc` и повторного запуска.
+- На API 33+ язык меняется в системных «Настройки → Приложения → OneDoc → Язык».
 - Инструментальный `AppLanguageSwitchTest`:
   - выбрать English и проверить «Library»;
   - `recreate()` — язык сохраняется;
@@ -125,11 +125,15 @@
 ---
 
 ## 1. Подготовка к публикации в Google Play
+**Решения пользователя (25.10.2026):** `applicationId` — `io.doccraftstudio.onedoc` (вместе с `namespace` и пакетом исходников), название — OneDoc, в резервную копию — только настройки.
+
 **Что сделать**
-1. Согласовать с пользователем финальный пакет (например, `ru.<домен>.docflow`) и название.
-2. Сменить `applicationId`.
-   - `namespace` и пакеты исходников менять отдельно, если пользователь захочет.
-   - Authority `FileProvider` (`${applicationId}.files`) подстроится сам. Тестовый провайдер `com.example.fileopener.test.attachments` и `am instrument`-команды обновить.
+1. ~~Согласовать финальный пакет и название~~ — `io.doccraftstudio.onedoc`, OneDoc.
+2. ~~Сменить `applicationId`~~ — выполнено 25.10.2026.
+   - Сменены `applicationId`, `namespace`, пакеты исходников в `main`, `test`, `androidTest`, папка Room-схем (`app/schemas/io.doccraftstudio.onedoc.data.db.AppDatabase/`), тестовый провайдер (`io.doccraftstudio.onedoc.test.attachments`), команды в `CLAUDE.md`.
+   - `FileProvider` (`${applicationId}.files`) подстроился сам. Внутренние имена (`DocFlowApp`, `docflow.db`, теги логов `DocFlow*`) не менялись: пользователю они не видны.
+   - Проверено: сборка, 138 юнит-тестов, lint, release с R8 (в `mapping.txt` 0 классов сменили пакет), инструментальные тесты 11/11 на API 37 и API 26.
+   - На эмуляторах новое приложение стоит рядом со старым `io.doccraftstudio.onedoc` (старое не удалялось).
 3. Иконка приложения: адаптивная (foreground/background + monochrome для тематических иконок Android 13+) вместо шаблонной.
 4. Ключ подписи release:
    - keystore — вне репозитория;
@@ -138,14 +142,14 @@
 5. Сборка `:app:bundleRelease` (AAB).
 6. Версия: схема `versionCode`/`versionName`.
 7. Тексты для Play: политика конфиденциальности (приложение не собирает данные и работает офлайн), анкета Data safety, описание и скриншоты.
-8. Проверить `backup_rules.xml` и `data_extraction_rules.xml`: что попадает в резервную копию (Room, DataStore, `filesDir/incoming`).
+8. ~~Правила резервного копирования~~ — выполнено 25.10.2026: в `backup_rules.xml` (Android 8–11) и `data_extraction_rules.xml` (12+, облако и перенос на устройство) включены только `datastore/settings.preferences_pb` и `app_language.xml`. База и `filesDir/incoming` не копируются: их `content://` URI и SAF-разрешения на новом устройстве недоступны. Восстановление через `bmgr` не проверялось.
 
 **Критерии готовности**
 - `./gradlew :app:bundleRelease` собирает подписанный AAB.
 - Release-APK из этого AAB, поставленный поверх, запускается и открывает все 7 форматов: проверить через `bundletool build-apks --connected-device` или установку на эмулятор.
 - В `mapping.txt` нет классов, сменивших пакет.
 - Иконка корректна в лаунчере API 26 и API 37, в том числе тематическая.
-- Инструментальные тесты 10/10 с новым `applicationId`.
+- ~~Инструментальные тесты с новым `applicationId`~~ — 11/11 на API 37 и API 26 (25.10.2026).
 - Keystore и пароли не попали в git.
 
 ## 2. Завершить проверку на API 26 (`Small_Phone`, emulator-5556)
@@ -162,7 +166,7 @@
 
 ## 3. Проверка на реальном устройстве
 **Что проверить**
-- Прокрутка XLSX 80 МБ во время разбора и после: `adb shell dumpsys gfxinfo com.example.fileopener`.
+- Прокрутка XLSX 80 МБ во время разбора и после: `adb shell dumpsys gfxinfo io.doccraftstudio.onedoc`.
 - PDF 80–100 МБ: зум, поиск.
 - Входящие файлы из Telegram, WhatsApp, Gmail и Chrome (в том числе с MIME `application/octet-stream`).
 
@@ -210,7 +214,7 @@
 
 # Инструментальные тесты без удаления приложения:
 ./gradlew :app:installDebug :app:installDebugAndroidTest
-adb shell am instrument -w com.example.fileopener.test/androidx.test.runner.AndroidJUnitRunner
+adb shell am instrument -w io.doccraftstudio.onedoc.test/androidx.test.runner.AndroidJUnitRunner
 # При двух эмуляторах: adb -s emulator-5554 ... (API 37) / adb -s emulator-5556 ... (API 26),
 # для Gradle — ANDROID_SERIAL=emulator-5556 ./gradlew :app:installDebug
 ```

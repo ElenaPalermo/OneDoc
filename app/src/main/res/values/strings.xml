@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">DocFlow Reader</string>
+    <string name="app_name" translatable="false">OneDoc</string>
 
     <string name="tab_library">Библиотека</string>
     <string name="tab_recent">Недавние</string>
