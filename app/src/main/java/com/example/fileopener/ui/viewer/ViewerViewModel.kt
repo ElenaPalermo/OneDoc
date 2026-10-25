@@ -62,7 +62,7 @@ sealed interface ViewerUiState {
         val initialPosition: ReadingPosition
     }
 
-    /** TXT, DOCX, DOC — текст с переносом по ширине экрана. */
+    /** TXT, XML, DOCX, DOC — текст с переносом по ширине экрана. */
     data class Flow(
         override val document: DocumentItem,
         override val initialPosition: ReadingPosition,
@@ -170,7 +170,7 @@ class ViewerViewModel(
     private suspend fun openContent(document: DocumentItem, savedPosition: ReadingPosition, password: String?) {
         _uiState.value = try {
             when (document.format) {
-                DocumentFormat.TXT, DocumentFormat.DOCX, DocumentFormat.DOC ->
+                DocumentFormat.TXT, DocumentFormat.XML, DocumentFormat.DOCX, DocumentFormat.DOC ->
                     ViewerUiState.Flow(document, savedPosition, flowLoader.load(document))
                 DocumentFormat.PDF -> {
                     val session = PdfSession(

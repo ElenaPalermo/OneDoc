@@ -2,6 +2,7 @@ package com.example.fileopener.reader.txt
 
 import java.io.BufferedInputStream
 import java.io.InputStream
+import java.io.Reader
 import java.nio.charset.Charset
 
 /** Текст, разбитый на абзацы для ленивого отображения в `LazyColumn`. */
@@ -25,11 +26,16 @@ object TextReader {
         val detected = CharsetDetector.detect(sample, sampleLength)
         buffered.skip(detected.bomLength.toLong())
 
+        return TextDocument(readParagraphs(buffered.reader(detected.charset)), detected.charset)
+    }
+
+    /** Строки текста; слишком длинные режутся на куски по [MAX_PARAGRAPH_LENGTH]. */
+    fun readParagraphs(reader: Reader): List<String> {
         val paragraphs = ArrayList<String>()
-        buffered.bufferedReader(detected.charset).useLines { lines ->
+        reader.buffered().useLines { lines ->
             lines.forEach { line -> paragraphs.addChunked(line) }
         }
-        return TextDocument(paragraphs, detected.charset)
+        return paragraphs
     }
 
     private fun ArrayList<String>.addChunked(line: String) {
@@ -46,15 +52,15 @@ object TextReader {
             start = end
         }
     }
+}
 
-    /** `InputStream.readNBytes` появился только в API 33. */
-    private fun InputStream.readNBytesCompat(buffer: ByteArray): Int {
-        var total = 0
-        while (total < buffer.size) {
-            val read = read(buffer, total, buffer.size - total)
-            if (read < 0) break
-            total += read
-        }
-        return total
+/** `InputStream.readNBytes` появился только в API 33. */
+internal fun InputStream.readNBytesCompat(buffer: ByteArray): Int {
+    var total = 0
+    while (total < buffer.size) {
+        val read = read(buffer, total, buffer.size - total)
+        if (read < 0) break
+        total += read
     }
+    return total
 }

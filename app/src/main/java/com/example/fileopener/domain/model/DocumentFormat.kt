@@ -27,7 +27,10 @@ enum class DocumentFormat(
         setOf("csv"),
         setOf("text/csv", "text/comma-separated-values", "text/x-csv", "application/csv"),
     ),
-    TXT(DocumentCategory.TEXT, setOf("txt"), setOf("text/plain"));
+    TXT(DocumentCategory.TEXT, setOf("txt"), setOf("text/plain")),
+
+    /** Показывается как отформатированный текст, поэтому в той же группе, что и TXT. */
+    XML(DocumentCategory.TEXT, setOf("xml"), setOf("application/xml", "text/xml"));
 
     /**
      * Имя файла с расширением этого формата. Нужно, когда формат определён по MIME, а имени нет

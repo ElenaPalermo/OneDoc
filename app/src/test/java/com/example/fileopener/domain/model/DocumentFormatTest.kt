@@ -36,6 +36,14 @@ class DocumentFormatTest {
     }
 
     @Test
+    fun xml_isDetectedByExtensionAndBothMimeTypes() {
+        assertEquals(DocumentFormat.XML, DocumentFormat.detect("feed.XML", "text/plain"))
+        assertEquals(DocumentFormat.XML, DocumentFormat.fromMimeType("application/xml"))
+        assertEquals(DocumentFormat.XML, DocumentFormat.fromMimeType("text/xml; charset=windows-1251"))
+        assertEquals(DocumentCategory.TEXT, DocumentFormat.XML.category)
+    }
+
+    @Test
     fun fileName_addsExtensionOnlyWhenMissing() {
         assertEquals("big.pdf", DocumentFormat.PDF.fileName("big"))
         assertEquals("31.xlsx", DocumentFormat.XLSX.fileName("31"))

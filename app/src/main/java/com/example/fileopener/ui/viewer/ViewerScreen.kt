@@ -60,6 +60,7 @@ import com.example.fileopener.ui.viewer.pdf.PdfBottomBarHeight
 import com.example.fileopener.ui.viewer.common.ContentsDrawerContent
 import com.example.fileopener.ui.viewer.common.ReaderSettingsSheet
 import com.example.fileopener.ui.viewer.pdf.PdfViewer
+import com.example.fileopener.ui.viewer.flow.WithDocumentNotice
 import com.example.fileopener.ui.viewer.flow.FlowViewer
 import com.example.fileopener.ui.viewer.common.SearchActions
 import com.example.fileopener.ui.viewer.common.SearchField
@@ -238,18 +239,27 @@ fun ViewerScreen(
                     modifier = Modifier.padding(contentPadding),
                 )
 
-                is ViewerUiState.Flow -> if (settings == null) {
-                    Loading()
-                } else {
-                    FlowViewer(
-                        document = current.content,
-                        settings = settings,
-                        initialPosition = current.initialPosition,
-                        navigationRequests = viewModel.navigationRequests,
-                        contentPadding = contentPadding,
-                        onPositionChanged = viewModel::onPositionChanged,
-                        onFontSizeChanged = viewModel::setFontSize,
+                is ViewerUiState.Flow -> when {
+                    settings == null -> Loading()
+
+                    current.content.blocks.isEmpty() -> EmptyState(
+                        iconRes = R.drawable.ic_doc_text,
+                        title = null,
+                        message = stringResource(R.string.viewer_empty_document),
+                        modifier = Modifier.padding(contentPadding),
                     )
+
+                    else -> WithDocumentNotice(current.content.notice, contentPadding) { padding ->
+                        FlowViewer(
+                            document = current.content,
+                            settings = settings,
+                            initialPosition = current.initialPosition,
+                            navigationRequests = viewModel.navigationRequests,
+                            contentPadding = padding,
+                            onPositionChanged = viewModel::onPositionChanged,
+                            onFontSizeChanged = viewModel::setFontSize,
+                        )
+                    }
                 }
 
                 is ViewerUiState.Pdf -> PdfViewer(

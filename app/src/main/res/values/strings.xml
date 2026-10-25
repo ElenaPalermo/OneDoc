@@ -11,7 +11,7 @@
     <string name="action_remove">Убрать</string>
 
     <string name="library_empty_title">Библиотека пуста</string>
-    <string name="library_empty_message">Добавьте папку с документами — приложение найдёт в ней PDF, Word, Excel и TXT и будет обновлять список автоматически.</string>
+    <string name="library_empty_message">Добавьте папку с документами — приложение найдёт в ней PDF, Word, Excel, TXT и XML и будет обновлять список автоматически.</string>
     <string name="library_downloads_hint">Папку «Загрузки» целиком Android 11+ выбрать не даёт: выберите вложенную папку или добавьте файлы из неё вручную.</string>
     <string name="library_no_documents_title">Документы не найдены</string>
     <string name="library_no_documents_message">В выбранных папках нет поддерживаемых файлов. Потяните список вниз, чтобы пересканировать.</string>
@@ -129,11 +129,16 @@
     <string name="viewer_too_large">Документ слишком большой для просмотра на этом устройстве.</string>
     <string name="viewer_unavailable">Файл недоступен: он удалён, перемещён или доступ к нему отозван.</string>
     <string name="viewer_read_error">Не удалось прочитать файл.</string>
+    <string name="viewer_empty_document">Документ пуст.</string>
+    <string name="xml_notice_malformed_line">XML содержит ошибку в строке %1$d — показан исходный текст.</string>
+    <string name="xml_notice_malformed">XML содержит ошибку — показан исходный текст.</string>
+    <string name="xml_notice_entities">Документ объявляет сущности DTD. Из соображений безопасности он не разбирается — показан исходный текст.</string>
+    <string name="action_dismiss">Скрыть</string>
 
     <string name="category_pdf" translatable="false">PDF</string>
     <string name="category_word" translatable="false">Word</string>
     <string name="category_spreadsheet" translatable="false">Excel</string>
-    <string name="category_text" translatable="false">TXT</string>
+    <string name="category_text" translatable="false">TXT/XML</string>
 
     <string name="action_language">Язык</string>
     <string name="language_title">Язык интерфейса</string>

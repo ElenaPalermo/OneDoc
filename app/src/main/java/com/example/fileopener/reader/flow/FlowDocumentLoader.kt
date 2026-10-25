@@ -7,12 +7,13 @@ import com.example.fileopener.reader.docx.DocxReader
 import com.example.fileopener.reader.txt.TextDocument
 import com.example.fileopener.reader.txt.TextReader
 import com.example.fileopener.reader.xml.XmlParserFactory
+import com.example.fileopener.reader.xmldoc.XmlDocumentReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InputStream
 
-/** Загружает TXT/DOCX/DOC в общую модель [FlowDocument]. */
+/** Загружает TXT/XML/DOCX/DOC в общую модель [FlowDocument]. */
 fun interface FlowDocumentLoader {
     suspend fun load(document: DocumentItem): FlowDocument
 }
@@ -28,6 +29,7 @@ class DefaultFlowDocumentLoader(
             DocumentFormat.TXT -> openStream(document.uri).use(TextReader::read).toFlowDocument()
             DocumentFormat.DOCX -> DocxReader(parsers).read(localFile(document.uri))
             DocumentFormat.DOC -> openStream(document.uri).use(DocReader::read)
+            DocumentFormat.XML -> XmlDocumentReader.read({ openStream(document.uri) }, parsers)
             else -> throw IllegalArgumentException("${document.format} не является документом с переносом текста")
         }
     }

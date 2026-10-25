@@ -10,11 +10,13 @@ import java.io.Closeable
  *
  * @property paragraphSpacing добавлять ли отступ между абзацами (в TXT каждая строка — абзац, отступы не нужны).
  * @property resources картинки документа, читаются лениво; закрываются вместе с документом.
+ * @property notice предупреждение, которое просмотрщик показывает над документом.
  */
 class FlowDocument private constructor(
     val blocks: List<FlowBlock>,
     val paragraphSpacing: Boolean,
     val resources: FlowResources? = null,
+    val notice: DocumentNotice? = null,
 ) : Closeable {
     /** Оглавление из заголовков первых трёх уровней. */
     val tableOfContents: List<TocEntry> by lazy {
@@ -33,7 +35,12 @@ class FlowDocument private constructor(
         private const val MAX_TOC_LEVEL = 3
 
         /** Разбивает таблицы на строки: так большая таблица не компонуется целиком одним элементом. */
-        fun of(blocks: List<FlowBlock>, paragraphSpacing: Boolean, resources: FlowResources? = null): FlowDocument {
+        fun of(
+            blocks: List<FlowBlock>,
+            paragraphSpacing: Boolean,
+            resources: FlowResources? = null,
+            notice: DocumentNotice? = null,
+        ): FlowDocument {
             val flat = ArrayList<FlowBlock>(blocks.size)
             for (block in blocks) {
                 if (block is TableBlock) {
@@ -44,9 +51,18 @@ class FlowDocument private constructor(
                     flat += block
                 }
             }
-            return FlowDocument(flat, paragraphSpacing, resources)
+            return FlowDocument(flat, paragraphSpacing, resources, notice)
         }
     }
+}
+
+/** Почему документ показан не так, как обычно; текст сообщения выбирает интерфейс. */
+sealed interface DocumentNotice {
+    /** XML не разобран: показан исходный текст. [line] — строка ошибки, если парсер её сообщил. */
+    data class MalformedXml(val line: Int?) : DocumentNotice
+
+    /** XML объявляет сущности в DTD: разбирать его небезопасно («billion laughs»), показан исходный текст. */
+    data object XmlEntitiesNotExpanded : DocumentNotice
 }
 
 sealed interface FlowBlock {

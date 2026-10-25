@@ -9,7 +9,7 @@
     <string name="action_remove">Remove</string>
 
     <string name="library_empty_title">Your library is empty</string>
-    <string name="library_empty_message">Add a folder with documents — the app will find PDF, Word, Excel and TXT files in it and keep the list up to date automatically.</string>
+    <string name="library_empty_message">Add a folder with documents — the app will find PDF, Word, Excel, TXT and XML files in it and keep the list up to date automatically.</string>
     <string name="library_downloads_hint">Android 11+ does not allow choosing the whole Downloads folder: pick a subfolder or add files from it manually.</string>
     <string name="library_no_documents_title">No documents found</string>
     <string name="library_no_documents_message">The selected folders contain no supported files. Pull the list down to rescan.</string>
@@ -123,6 +123,11 @@
     <string name="viewer_too_large">The document is too large to view on this device.</string>
     <string name="viewer_unavailable">The file is unavailable: it was deleted, moved, or access to it was revoked.</string>
     <string name="viewer_read_error">Could not read the file.</string>
+    <string name="viewer_empty_document">The document is empty.</string>
+    <string name="xml_notice_malformed_line">The XML has an error on line %1$d — showing the source text.</string>
+    <string name="xml_notice_malformed">The XML contains an error — showing the source text.</string>
+    <string name="xml_notice_entities">The document declares DTD entities. For security reasons it is not parsed — showing the source text.</string>
+    <string name="action_dismiss">Dismiss</string>
 
     <string name="action_language">Language</string>
     <string name="language_title">App language</string>
