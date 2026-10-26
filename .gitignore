@@ -20,3 +20,7 @@ hs_err_pid*.log
 
 # Данные сессий Kotlin-компилятора
 .kotlin/
+
+# Ключи подписи — только вне репозитория (C:\Users\elena\keys\), пароли — в ~/.gradle/gradle.properties
+*.jks
+*.keystore

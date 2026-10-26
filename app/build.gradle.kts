@@ -22,10 +22,27 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Upload-ключ для Google Play. Путь и пароли — в ~/.gradle/gradle.properties (вне репозитория);
+    // без них release собирается неподписанным.
+    val uploadStoreFile = providers.gradleProperty("ONEDOC_UPLOAD_STORE_FILE").orNull
+    signingConfigs {
+        if (uploadStoreFile != null) {
+            create("upload") {
+                storeFile = file(uploadStoreFile)
+                storePassword = providers.gradleProperty("ONEDOC_UPLOAD_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("ONEDOC_UPLOAD_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("ONEDOC_UPLOAD_KEY_PASSWORD").get()
+            }
+        }
+    }
+
     buildTypes {
         release {
             optimization {
                 enable = true
+            }
+            if (uploadStoreFile != null) {
+                signingConfig = signingConfigs.getByName("upload")
             }
         }
     }
