@@ -16,7 +16,7 @@
 
 ## Перед загрузкой
 - Разработчик в политике — DocCraft Studio, почта — doccraftstudioinfo@gmail.com. Имя должно совпадать с именем аккаунта разработчика в Play Console.
-- Ссылка на политику для Play Console: https://elenapalermo.github.io/OneDoc/privacy.html
+- Ссылка на политику для Play Console: https://elenapalermo.github.io/OneDoc/privacy.html#en (сразу на английский раздел; на той же странице — русский и итальянский)
 - GitHub Pages публикует папку `docs/` ветки `main` репозитория ElenaPalermo/OneDoc (публичного); страница обновляется через минуту-две после push.
 - Контактная почта разработчика в Play Console — она видна на странице приложения.
 
