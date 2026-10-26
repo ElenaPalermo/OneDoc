@@ -1,0 +1,51 @@
+OneDoc opens documents, spreadsheets and PDFs right on your phone — no internet, no sign-up and no ads.
+
+Supported formats: PDF, DOCX, DOC, XLSX, XLS, CSV, TXT and XML.
+
+OPEN FILES FROM ANYWHERE
+• Attachments from email and messengers: choose "Open with" or "Share" → OneDoc.
+• Files from your phone's storage, Downloads and file managers.
+• Library: add folders with documents — OneDoc finds the files and keeps the list up to date.
+
+PDF
+• Large files open fast.
+• Jump to a page with the slider or by number.
+• Table of contents.
+• Text search with highlighted results.
+• Password-protected PDFs.
+
+TEXT DOCUMENTS (DOCX, DOC, TXT, XML)
+• Text reflows to fit the screen — no sideways scrolling.
+• Choose the font, text size and line spacing.
+• Headings, lists, tables and images from DOCX and DOC.
+• Table of contents built from headings.
+• XML is shown indented with highlighted tags; damaged XML opens as plain text.
+• Automatic text encoding detection, including Windows-1251.
+
+SPREADSHEETS (XLSX, XLS, CSV)
+• Sheet tabs at the bottom of the screen.
+• Numbers, dates and percentages look the same as in the original file.
+• Frozen header row.
+• Sharp pinch-to-zoom of the grid.
+• Search within the cells of a sheet.
+• Large spreadsheets appear immediately, before loading finishes.
+
+COMFORTABLE READING
+• The app remembers where you stopped and reopens the document at the same place.
+• Bookmarks with quick navigation.
+• Reading themes: light, dark and sepia.
+• Full-screen mode: tap the centre to hide the toolbars.
+• Pinch to zoom.
+
+LIBRARY
+• Library and Recent tabs.
+• List or grid view with PDF thumbnails.
+• Instant search by name, filter by type, sort by date, name or size.
+• Rename, delete and share right from the list.
+
+PRIVACY
+• The app has no internet access — your documents never leave the device.
+• No ads, no analytics, no accounts.
+• Access only to the folders and files you choose yourself.
+
+Interface in English, Russian and Italian. Works on Android 8.0 and newer, on phones and tablets, in portrait and landscape.

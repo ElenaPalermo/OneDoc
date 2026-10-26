@@ -1,0 +1,51 @@
+OneDoc apre documenti, fogli di calcolo e PDF direttamente sul telefono — senza Internet, senza registrazione e senza pubblicità.
+
+Formati supportati: PDF, DOCX, DOC, XLSX, XLS, CSV, TXT e XML.
+
+APRI I FILE DA OVUNQUE
+• Allegati da email e app di messaggistica: scegli "Apri con" o "Condividi" → OneDoc.
+• File dalla memoria del telefono, dai Download e dai file manager.
+• Libreria: aggiungi le cartelle con i documenti — OneDoc trova i file e mantiene l'elenco aggiornato.
+
+PDF
+• Apertura rapida anche dei file grandi.
+• Vai a una pagina con il cursore o inserendo il numero.
+• Indice del documento.
+• Ricerca nel testo con evidenziazione dei risultati.
+• PDF protetti da password.
+
+DOCUMENTI DI TESTO (DOCX, DOC, TXT, XML)
+• Il testo si adatta alla larghezza dello schermo: niente scorrimento laterale.
+• Scegli carattere, dimensione del testo e interlinea.
+• Titoli, elenchi, tabelle e immagini da DOCX e DOC.
+• Indice generato dai titoli.
+• L'XML viene mostrato con rientri e tag evidenziati; un XML danneggiato si apre come testo semplice.
+• Riconoscimento automatico della codifica, compresa Windows-1251.
+
+FOGLI DI CALCOLO (XLSX, XLS, CSV)
+• Schede dei fogli in fondo allo schermo.
+• Numeri, date e percentuali come nel file originale.
+• Riga di intestazione bloccata.
+• Zoom nitido della griglia con due dita.
+• Ricerca nelle celle del foglio.
+• I fogli di grandi dimensioni compaiono subito, prima della fine del caricamento.
+
+LETTURA COMODA
+• L'app ricorda dove ti sei fermato e riapre il documento dallo stesso punto.
+• Segnalibri con accesso rapido.
+• Temi di lettura: chiaro, scuro e seppia.
+• Modalità a schermo intero: tocca il centro per nascondere le barre.
+• Zoom con due dita.
+
+LIBRERIA
+• Schede Libreria e Recenti.
+• Visualizzazione a elenco o a griglia con miniature dei PDF.
+• Ricerca istantanea per nome, filtro per tipo, ordinamento per data, nome o dimensione.
+• Rinomina, elimina e condividi direttamente dall'elenco.
+
+PRIVACY
+• L'app non ha accesso a Internet: i tuoi documenti non lasciano il dispositivo.
+• Niente pubblicità, statistiche o account.
+• Accesso solo alle cartelle e ai file che scegli tu.
+
+Interfaccia in italiano, inglese e russo. Funziona su Android 8.0 e versioni successive, su telefoni e tablet, in verticale e in orizzontale.
