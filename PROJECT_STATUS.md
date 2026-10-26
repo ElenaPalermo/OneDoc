@@ -183,7 +183,7 @@
   - ~~иконка~~ — адаптивная по рисунку `art/onedoci.png` (бирюзовая плитка с надписью «OneDoc»), с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
   - ~~ключ подписи и AAB~~ — upload-ключ вне репозитория (`C:\Users\elena\keys\onedoc-upload.jks`, пароли в `~/.gradle/gradle.properties`), `bundleRelease` собирает подписанный AAB; release из AAB проверен на эмуляторе API 37 — все 8 форматов открываются, падений нет;
   - нет политики конфиденциальности и описания доступа к данным;
-  - `versionCode = 1`, `versionName = "1.0"`.
+  - ~~версия~~ — `versionCode = 1`, `versionName = "1.0.0"`; `versionCode` растёт на 1 с каждой загрузкой в Play.
 - **Не всё проверено на API 26:**
   - тёмная тема и сепия;
   - immersive-режим;

@@ -16,8 +16,10 @@ android {
         applicationId = "io.doccraftstudio.onedoc"
         minSdk = 26
         targetSdk = 37
+        // versionCode растёт на 1 с каждой загрузкой в Google Play (повторить номер Play не даст);
+        // versionName — MAJOR.MINOR.PATCH, его видят пользователи.
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
