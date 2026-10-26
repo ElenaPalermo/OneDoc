@@ -5,7 +5,8 @@
 | `listing/<язык>/title.txt` | Название приложения (до 30 символов) |
 | `listing/<язык>/short-description.txt` | Краткое описание (до 80 символов) |
 | `listing/<язык>/full-description.txt` | Полное описание (до 4000 символов) |
-| `privacy-policy.md` | Политика конфиденциальности (ru, en, it) — опубликовать по публичному адресу |
+| `privacy-policy.md` | Политика конфиденциальности (ru, en, it) — источник текста. Опубликована через GitHub Pages: https://elenapalermo.github.io/OneDoc/privacy.html |
+| `make_policy_html.py` | Собирает из `privacy-policy.md` страницу `../docs/privacy.html` (и `../docs/index.html`); после правки политики — `python play/make_policy_html.py`, коммит и push |
 | `data-safety.md` | Ответы для Data safety и деклараций «Содержание приложения» |
 | `../art/play_icon_512.png` | Значок для Play, 512×512, без прозрачности |
 | `feature-graphic.png` | Обложка (feature graphic), 1024×500, без прозрачности. Собирается `../art/EditBanner.java` из баннера пользователя `../art/banner_source.png` (1796×876); полный размер — `../art/banner_play.png` |
@@ -13,9 +14,10 @@
 
 Языки страницы: `ru-RU` (основной), `en-US`, `it-IT`.
 
-## Перед загрузкой заполнить
-- В `privacy-policy.md` — `[ИМЯ РАЗРАБОТЧИКА]` / `[DEVELOPER NAME]` / `[NOME DELLO SVILUPPATORE]` и адрес электронной почты для связи (на трёх языках).
-- Опубликовать `privacy-policy.md` (например, GitHub Pages) и указать ссылку в Play Console.
+## Перед загрузкой
+- Разработчик в политике — DocCraft Studio, почта — doccraftstudioinfo@gmail.com. Имя должно совпадать с именем аккаунта разработчика в Play Console.
+- Ссылка на политику для Play Console: https://elenapalermo.github.io/OneDoc/privacy.html
+- GitHub Pages публикует папку `docs/` ветки `main` репозитория ElenaPalermo/OneDoc (публичного); страница обновляется через минуту-две после push.
 - Контактная почта разработчика в Play Console — она видна на странице приложения.
 
 ## Скриншоты

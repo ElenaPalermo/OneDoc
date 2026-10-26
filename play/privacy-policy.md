@@ -8,7 +8,7 @@
 
 ## Русский
 
-Эта политика описывает, как приложение OneDoc для Android (далее — «приложение») обращается с вашими данными. Разработчик — [ИМЯ РАЗРАБОТЧИКА].
+Эта политика описывает, как приложение OneDoc для Android (далее — «приложение») обращается с вашими данными. Разработчик — DocCraft Studio.
 
 ### Коротко
 Приложение работает полностью офлайн. У него нет доступа к интернету: в нём нет разрешения на работу с сетью, рекламы, аналитики, учётных записей и сторонних сервисов. Разработчик не получает никаких ваших данных.
@@ -44,13 +44,13 @@
 Новая редакция публикуется по этому же адресу с новой датой обновления.
 
 ### Контакты
-По вопросам о конфиденциальности: [ЭЛЕКТРОННАЯ ПОЧТА ДЛЯ СВЯЗИ].
+По вопросам о конфиденциальности: [doccraftstudioinfo@gmail.com](mailto:doccraftstudioinfo@gmail.com).
 
 ---
 
 ## English
 
-This policy explains how the OneDoc app for Android (the "app") handles your data. Developer: [DEVELOPER NAME].
+This policy explains how the OneDoc app for Android (the "app") handles your data. Developer: DocCraft Studio.
 
 ### Summary
 The app works fully offline. It has no internet access: it does not request the network permission and contains no ads, analytics, accounts or third-party services. The developer receives none of your data.
@@ -86,13 +86,13 @@ The app collects no data at all, including data from children.
 Updated versions of this policy are published at this address with a new "last updated" date.
 
 ### Contact
-Privacy questions: [CONTACT EMAIL].
+Privacy questions: [doccraftstudioinfo@gmail.com](mailto:doccraftstudioinfo@gmail.com).
 
 ---
 
 ## Italiano
 
-Questa informativa descrive come l'app OneDoc per Android (l'"app") tratta i tuoi dati. Sviluppatore: [NOME DELLO SVILUPPATORE].
+Questa informativa descrive come l'app OneDoc per Android (l'"app") tratta i tuoi dati. Sviluppatore: DocCraft Studio.
 
 ### In breve
 L'app funziona completamente offline. Non ha accesso a Internet: non richiede il permesso di rete e non contiene pubblicità, statistiche, account o servizi di terze parti. Lo sviluppatore non riceve alcun tuo dato.
@@ -128,4 +128,4 @@ L'app non raccoglie alcun dato, compresi i dati dei minori.
 Le nuove versioni di questa informativa vengono pubblicate a questo indirizzo con una nuova data di aggiornamento.
 
 ### Contatti
-Per domande sulla privacy: [EMAIL DI CONTATTO].
+Per domande sulla privacy: [doccraftstudioinfo@gmail.com](mailto:doccraftstudioinfo@gmail.com).
