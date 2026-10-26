@@ -11,7 +11,7 @@
     <string name="action_remove">Убрать</string>
 
     <string name="library_empty_title">Библиотека пуста</string>
-    <string name="library_empty_message">Добавьте папку с документами — приложение найдёт в ней PDF, Word, Excel, TXT и XML и будет обновлять список автоматически.</string>
+    <string name="library_empty_message">Добавьте папку с документами — приложение найдёт в ней файлы PDF, DOCX, DOC, XLSX, XLS, CSV, TXT и XML и будет обновлять список автоматически.</string>
     <string name="library_downloads_hint">Папку «Загрузки» целиком Android 11+ выбрать не даёт: выберите вложенную папку или добавьте файлы из неё вручную.</string>
     <string name="library_no_documents_title">Документы не найдены</string>
     <string name="library_no_documents_message">В выбранных папках нет поддерживаемых файлов. Потяните список вниз, чтобы пересканировать.</string>
@@ -136,8 +136,8 @@
     <string name="action_dismiss">Скрыть</string>
 
     <string name="category_pdf" translatable="false">PDF</string>
-    <string name="category_word" translatable="false">Word</string>
-    <string name="category_spreadsheet" translatable="false">Excel</string>
+    <string name="category_word">Документы</string>
+    <string name="category_spreadsheet">Таблицы</string>
     <string name="category_text" translatable="false">TXT/XML</string>
 
     <string name="action_language">Язык</string>

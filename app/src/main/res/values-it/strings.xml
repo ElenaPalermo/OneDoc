@@ -9,7 +9,9 @@
     <string name="action_remove">Rimuovi</string>
 
     <string name="library_empty_title">La libreria è vuota</string>
-    <string name="library_empty_message">Aggiungi una cartella con documenti: l\'app vi troverà i file PDF, Word, Excel, TXT e XML e aggiornerà l\'elenco automaticamente.</string>
+    <string name="library_empty_message">Aggiungi una cartella con documenti: l\'app vi troverà i file PDF, DOCX, DOC, XLSX, XLS, CSV, TXT e XML e aggiornerà l\'elenco automaticamente.</string>
+    <string name="category_word">Documenti</string>
+    <string name="category_spreadsheet">Fogli di calcolo</string>
     <string name="library_downloads_hint">Android 11+ non consente di scegliere l\'intera cartella Download: scegli una sottocartella o aggiungi i file manualmente.</string>
     <string name="library_no_documents_title">Nessun documento trovato</string>
     <string name="library_no_documents_message">Le cartelle selezionate non contengono file supportati. Trascina l\'elenco verso il basso per ripetere la scansione.</string>

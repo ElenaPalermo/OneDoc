@@ -9,7 +9,9 @@
     <string name="action_remove">Remove</string>
 
     <string name="library_empty_title">Your library is empty</string>
-    <string name="library_empty_message">Add a folder with documents — the app will find PDF, Word, Excel, TXT and XML files in it and keep the list up to date automatically.</string>
+    <string name="library_empty_message">Add a folder with documents — the app will find PDF, DOCX, DOC, XLSX, XLS, CSV, TXT and XML files in it and keep the list up to date automatically.</string>
+    <string name="category_word">Documents</string>
+    <string name="category_spreadsheet">Spreadsheets</string>
     <string name="library_downloads_hint">Android 11+ does not allow choosing the whole Downloads folder: pick a subfolder or add files from it manually.</string>
     <string name="library_no_documents_title">No documents found</string>
     <string name="library_no_documents_message">The selected folders contain no supported files. Pull the list down to rescan.</string>

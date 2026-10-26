@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.doccraftstudio.onedoc.R
-import io.doccraftstudio.onedoc.domain.model.DocumentCategory
 import io.doccraftstudio.onedoc.domain.model.DocumentItem
 import java.text.DateFormat
 import java.util.Date
@@ -146,12 +145,8 @@ private fun DocumentMenuButton(
 private fun documentDetails(document: DocumentItem, timestamp: Long, withType: Boolean): String {
     val context = LocalContext.current
     return listOfNotNull(
-        // Группа «TXT/XML» объединяет два формата — в строке документа показываем конкретный.
-        when {
-            !withType -> null
-            document.format.category == DocumentCategory.TEXT -> document.format.name
-            else -> stringResource(document.format.category.labelRes)
-        },
+        // В строке — сам формат (DOCX, XLSX, XML…): названия групп («Документы», «Таблицы») для одного файла не подходят.
+        if (withType) document.format.name else null,
         Formatter.formatShortFileSize(context, document.sizeBytes),
         formatDate(timestamp),
     ).joinToString(" · ")
