@@ -181,7 +181,7 @@
   - ~~название~~ — OneDoc (раньше рабочее «DocFlow Reader»);
   - ~~резервное копирование~~ — только настройки (DataStore и выбор языка), без базы и копий вложений;
   - ~~иконка~~ — адаптивная по рисунку `art/onedoci.png` (бирюзовая плитка с надписью «OneDoc»), с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
-  - ~~ключ подписи и AAB~~ — upload-ключ вне репозитория (`C:\Users\elena\keys\onedoc-upload.jks`, пароли в `~/.gradle/gradle.properties`), `bundleRelease` собирает подписанный AAB; release из AAB на устройстве ещё не проверен;
+  - ~~ключ подписи и AAB~~ — upload-ключ вне репозитория (`C:\Users\elena\keys\onedoc-upload.jks`, пароли в `~/.gradle/gradle.properties`), `bundleRelease` собирает подписанный AAB; release из AAB проверен на эмуляторе API 37 — все 8 форматов открываются, падений нет;
   - нет политики конфиденциальности и описания доступа к данным;
   - `versionCode = 1`, `versionName = "1.0"`.
 - **Не всё проверено на API 26:**
