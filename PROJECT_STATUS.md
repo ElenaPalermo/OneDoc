@@ -180,7 +180,7 @@
   - ~~пакет~~ — `io.doccraftstudio.onedoc` (`applicationId`, `namespace`, исходники); до этого был `com.example.fileopener`;
   - ~~название~~ — OneDoc (раньше рабочее «DocFlow Reader»);
   - ~~резервное копирование~~ — только настройки (DataStore и выбор языка), без базы и копий вложений;
-  - ~~иконка~~ — адаптивная по рисунку `art/OneDoc_icon.png`, с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
+  - ~~иконка~~ — адаптивная по рисунку `art/onedocicon.png` (бирюзовая плитка с надписью «OneDoc»), с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
   - нет ключа подписи release и сборки AAB;
   - нет политики конфиденциальности и описания доступа к данным;
   - `versionCode = 1`, `versionName = "1.0"`.
