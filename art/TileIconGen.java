@@ -11,8 +11,9 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Генератор иконки приложения из рисунка-плитки art/onedoci.png (512×512: свой бирюзовый фон,
- * скругления и свечение по краю, надпись «OneDoc» внизу).
+ * Генератор иконки приложения из рисунка-плитки art/onedoc_neutral.png (512×512: свой бирюзовый фон,
+ * скругления и свечение по краю, надпись «OneDoc» внизу). Он получается из рисунка пользователя
+ * art/onedoci.png программой art/EditIcon.java (нейтральные плитки «Doc» и «Sheet» вместо «Word» и «Excel»).
  *
  * Что делает: вырезает внутреннюю часть плитки без свечения, заливает её углы за дугой скругления
  * цветом фона и кладёт плитку TILE_DP по центру холста 108 dp; снаружи плитки до краёв холста — повтор
@@ -23,10 +24,12 @@ import java.nio.charset.StandardCharsets;
  * Фон адаптивной иконки (TILE_BACKGROUND) задан отдельно в values/ic_launcher_background.xml.
  *
  * Запуск из корня репозитория (Java из Android Studio, без сборки):
- *   "C:/Program Files/Android/Android Studio/jbr/bin/java.exe" art/TileIconGen.java  *       art/onedoci.png app/src/main/res art/play_icon_512.png [каталог превью]
+ *   "C:/Program Files/Android/Android Studio/jbr/bin/java.exe" art/TileIconGen.java \
+ *       art/onedoc_neutral.png app/src/main/res art/play_icon_512.png [каталог превью]
+ * После смены иконки пересобрать и обложку Play (она берёт art/play_icon_512.png) — команда в art/EditBanner.java.
  * Размер плитки можно попробовать без правки кода: -DtileDp=58 перед именем файла.
  *
- * Константы CROP_*, CORNER_* и TILE_BACKGROUND подобраны по замерам именно этого рисунка.
+ * Константы CROP_*, CORNER_* и TILE_BACKGROUND подобраны по замерам этого рисунка (у art/onedoci.png та же геометрия).
  * Для другого рисунка их нужно измерить заново, иначе останутся свечение или срезанные края.
  */
 public class TileIconGen {

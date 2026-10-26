@@ -180,7 +180,7 @@
   - ~~пакет~~ — `io.doccraftstudio.onedoc` (`applicationId`, `namespace`, исходники); до этого был `com.example.fileopener`;
   - ~~название~~ — OneDoc (раньше рабочее «DocFlow Reader»);
   - ~~резервное копирование~~ — только настройки (DataStore и выбор языка), без базы и копий вложений;
-  - ~~иконка~~ — адаптивная по рисунку `art/onedoci.png` (бирюзовая плитка с надписью «OneDoc»), с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
+  - ~~иконка~~ — адаптивная по рисунку `art/onedoci.png` с нейтральными плитками «Doc» и «Sheet» вместо «Word» и «Excel» (`art/onedoc_neutral.png`), с монохромным слоем; иконка для Play — `art/play_icon_512.png`;
   - ~~ключ подписи и AAB~~ — upload-ключ вне репозитория (`C:\Users\elena\keys\onedoc-upload.jks`, пароли в `~/.gradle/gradle.properties`), `bundleRelease` собирает подписанный AAB; release из AAB проверен на эмуляторе API 37 — все 8 форматов открываются, падений нет;
   - тексты для Play — черновики в `play/`: описание (ru/en/it), политика конфиденциальности, ответы Data safety; обложка и скриншоты на трёх языках — в `play/`; нужно вписать имя разработчика и почту и опубликовать политику;
   - ~~версия~~ — `versionCode = 1`, `versionName = "1.0.0"`; `versionCode` растёт на 1 с каждой загрузкой в Play.
