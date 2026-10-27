@@ -71,6 +71,7 @@ Run from the repo root on Windows with `.\gradlew.bat` (or `./gradlew` in Git Ba
 - Instrumented tests (needs a device/emulator): `./gradlew :app:connectedDebugAndroidTest`
 - Single instrumented test: `./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.doccraftstudio.onedoc.data.db.AppDatabaseTest`
 - Lint: `./gradlew :app:lintDebug`
+- Baseline Profile (на подключённом устройстве API 28+, только адресно — прогон удаляет приложение вместе с данными): `ANDROID_SERIAL=<устройство> ./gradlew :app:generateBaselineProfile`; замер холодного старта — `ANDROID_SERIAL=<устройство> ./gradlew :baselineprofile:connectedBenchmarkReleaseAndroidTest -P android.testInstrumentationRunnerArguments.class=io.doccraftstudio.onedoc.baselineprofile.StartupBenchmark`
 
 ## Build setup (non-obvious)
 - AGP 9.x with built-in Kotlin: there is no `org.jetbrains.kotlin.android` plugin, only `org.jetbrains.kotlin.plugin.compose`. Don't add the Kotlin Android plugin. KSP 2.3.x (`com.google.devtools.ksp`) и Room Gradle-плагин с built-in Kotlin работают. Версия `kotlin` в каталоге (плагины compose/serialization) должна соответствовать Kotlin, встроенному в AGP, — не поднимать её по подсказке lint `NewerVersionAvailable`.
@@ -80,6 +81,7 @@ Run from the repo root on Windows with `.\gradlew.bat` (or `./gradlew` in Git Ba
 - There is no `proguard-rules.pro`: R8 keep rules go in `app/src/main/keepRules/` (`rules.keep`), and AGP picks up every file in that folder (сюда же — правила для POI и Pdfium).
 - Room-схемы экспортируются в `app/schemas/` (плагин `androidx.room`) и должны храниться в репозитории. При изменении сущностей — поднять `version` в `AppDatabase` и добавить миграцию.
 - В `gradle.properties` демону задан `-XX:+UseParallelGC`: JBR 25 из Android Studio падал с `EXCEPTION_ACCESS_VIOLATION` в потоках G1 GC.
+- Baseline Profile: модуль `:baselineprofile` (`com.android.test` + `androidx.baselineprofile`), профиль хранится в `app/src/release/generated/baselineProfiles/`. Для варианта `nonMinifiedRelease` в `app/build.gradle.kts` явно `optimization { enable = false }`: плагин отключает только `isMinifyEnabled`, и без этого профиль записывается в обфусцированных именах и R8 выбрасывает почти все правила приложения. Документы для сценария открывает сам тестовый APK (`startActivity` с выдачей доступа к URI), а не `am start`: на Android 11+ иначе OneDoc не видит пакет провайдера.
 - Repositories are declared only in `settings.gradle.kts` (`FAIL_ON_PROJECT_REPOS`), so a repository added in a module build file breaks the build.
 
 ## Code layout

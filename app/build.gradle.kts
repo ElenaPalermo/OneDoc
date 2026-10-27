@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -47,6 +48,14 @@ android {
                 signingConfig = signingConfigs.getByName("upload")
             }
         }
+        // Вариант, на котором генерируется Baseline Profile, должен собираться без R8: иначе профиль записан
+        // в обфусцированных именах этой сборки, не совпадающих с именами release, и R8 выбрасывает почти все
+        // правила приложения. Плагин отключает только isMinifyEnabled, а R8 у нас включён блоком optimization.
+        maybeCreate("nonMinifiedRelease").apply {
+            optimization {
+                enable = false
+            }
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -71,6 +80,14 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+// Профиль генерирует модуль :baselineprofile (./gradlew :app:generateBaselineProfile на подключённом
+// устройстве) и кладёт в src/release/generated/baselineProfiles/ — он хранится в репозитории и попадает в AAB.
+// При обычной сборке не перегенерируется.
+baselineProfile {
+    automaticGenerationDuringBuild = false
+    saveInSrc = true
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -91,6 +108,9 @@ dependencies {
     implementation(libs.poi.scratchpad)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.core)
+    // Устанавливает Baseline Profile при установке не из Play (sideload, adb) и для замеров.
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     // XmlPullParser для JVM-тестов парсеров (на устройстве используется встроенный в Android).

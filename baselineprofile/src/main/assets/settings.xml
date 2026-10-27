@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Report export settings -->
+<export version="2.1" lang="en">
+  <document id="annual-2026">
+    <title>Annual Report</title>
+    <author>Analytics team</author>
+    <format>PDF</format>
+    <pages from="1" to="3"/>
+    <options compress="true" password="false"/>
+  </document>
+  <schedule cron="0 9 * * 1" timezone="Europe/London"/>
+</export>

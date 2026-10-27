@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Документы для сценария: отдаёт файлы из assets, как почта или мессенджер — приложение
+             копирует их к себе. Доступ — только по выданному при запуске разрешению на URI. -->
+        <provider
+            android:name="io.doccraftstudio.onedoc.baselineprofile.DocumentProvider"
+            android:authorities="io.doccraftstudio.onedoc.baselineprofile.documents"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+    </application>
+
+</manifest>

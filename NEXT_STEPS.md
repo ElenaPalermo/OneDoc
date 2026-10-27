@@ -195,15 +195,24 @@
 - Доля janky-кадров при прокрутке после разбора — до 5 %.
 - Все источники открывают файл и добавляют его в «Недавние»; позиция сохраняется при повторном открытии.
 
-## 4. Baseline Profile (необязательно)
-**Что сделать**
-- Модуль `:baselineprofile` с генератором: запуск, «Недавние», открытие PDF и таблицы, прокрутка.
-- Подключить `androidx.profileinstaller`.
-- Учесть, что AGP 9 и встроенный Kotlin могут потребовать проверки совместимости плагина `androidx.baselineprofile`.
+## 4. Baseline Profile — сделан 27.10.2026, не хватает замера с исправленным профилем
+**Что сделано**
+- Модуль `:baselineprofile` (`com.android.test`, плагин `androidx.baselineprofile` 1.5.0 — с AGP 9.4.1 и встроенным Kotlin работает; Macrobenchmark 1.5.0). В `app` — `profileinstaller` 1.4.1 и `baselineProfile(project(":baselineprofile"))`.
+- `BaselineProfileGenerator`: холодный старт, прокрутка библиотеки, открытие PDF, DOCX, DOC, XLSX, CSV, TXT, XML (из assets модуля) с прокруткой. Документы отдаёт `DocumentProvider` тестового APK; открывает их сам тестовый APK через `startActivity` с `FLAG_GRANT_READ_URI_PERMISSION` — `am start` из шелла не годится: на Android 11+ OneDoc не видит пакет провайдера (AppsFilter) и импорт падает. Открытие проверяется по имени файла в верхней панели: со второго прохода документ открывается на сохранённой позиции. XLS в сценарии нет — нет тестового файла.
+- `StartupBenchmark`: холодный старт без предкомпиляции и с профилем, 10 запусков. На эмуляторе Macrobenchmark разрешён явно (`androidx.benchmark.suppressErrors=EMULATOR`).
+- Профиль — `app/src/release/generated/baselineProfiles/` (`baseline-prof.txt`, `startup-prof.txt`), хранится в репозитории; при обычной сборке не перегенерируется.
+- **Важно:** плагин отключает R8 для варианта генерации через `isMinifyEnabled`, а у нас R8 включён блоком `optimization` — поэтому в `app/build.gradle.kts` для `nonMinifiedRelease` явно `optimization { enable = false }`. Без этого профиль записывался в обфусцированных именах этой сборки, и в release доживало 19 правил OneDoc из 799. Теперь: 26 297 правил, OneDoc — 2 602; после R8 в release — 879 правил OneDoc (остальное R8 встроил), двоичный `baseline.prof` в AAB — 8,4 КБ (было 4,4).
+- Запуск только адресно (генерация и замер ставят свои варианты, подписанные upload-ключом, и после прогона удаляют приложение вместе с данными):
+  - `ANDROID_SERIAL=emulator-5554 ./gradlew :app:generateBaselineProfile`
+  - `ANDROID_SERIAL=emulator-5554 ./gradlew :baselineprofile:connectedBenchmarkReleaseAndroidTest -P android.testInstrumentationRunnerArguments.class=io.doccraftstudio.onedoc.baselineprofile.StartupBenchmark` (результат — `baselineprofile/build/outputs/connected_android_test_additional_output/benchmarkRelease/connected/*/…-benchmarkData.json`).
 
-**Критерии готовности**
-- `baseline-prof.txt` попадает в release-сборку.
-- Холодный старт (`am start -W`) и первая прокрутка сетки быстрее, чем без профиля; цифры записаны в `CLAUDE.md`.
+**Замеры (эмулятор API 37, x86_64)**
+- С профилем, ещё испорченным R8 (19 правил OneDoc): медиана TTID 527,7 мс без компиляции и 509,3 мс с профилем (−3,5 %).
+- С исправленным профилем замер не прошёл: эмулятор перезагрузился посреди прогона, затем завис — на компьютере оставалось 0,5 ГБ свободной памяти из 15,2.
+
+**Осталось**
+- Замер с исправленным профилем (после перезапуска эмулятора) и, лучше, на телефоне — с согласия пользователя: прогон удаляет OneDoc с устройства.
+- Вернуть на эмулятор API 37 release-версию из AAB и демо-библиотеку `Documents/OneDoc` (пользователь разрешил удалить её для замеров при условии восстановления).
 
 ## 5. Обновление зависимостей
 **Что сделать**

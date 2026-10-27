@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FileOpener"
 include(":app")
+include(":baselineprofile")
