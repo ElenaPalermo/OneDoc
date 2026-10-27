@@ -24,7 +24,9 @@ import java.util.function.IntPredicate;
  * 1) значки «Word» и «Excel» внизу слева → нейтральные «DOC» (документ с полосками) и «SHEET» (документ с сеткой);
  * 2) на летающих карточках квадраты с «W» и «X» → квадраты с полосками текста и с сеткой, зелёная сетка → синяя;
  * 3) экран телефона → реальный скриншот приложения с перспективой, скруглёнными углами и «островом» камеры поверх;
- * 4) синяя иконка слева от названия → иконка приложения (art/play_icon_512.png) в том же скруглённом квадрате.
+ * 4) синяя иконка слева от названия → иконка приложения (art/play_icon_512.png) в том же скруглённом квадрате;
+ * 5) «вихрь», похожий на логотип Adobe Acrobat, на значке PDF внизу и на летающей карточке → строки текста
+ *    (внизу — красный документ того же семейства, что DOC/SHEET/Text; на карточке плашка «PDF» остаётся).
  *
  * Координаты измерены на art/banner_source.png (1796×876); для другого исходника их нужно измерить заново.
  *
@@ -46,6 +48,8 @@ public class EditBanner {
         BufferedImage original = copy(img);
 
         bottomIcons(original);
+        pdfIcon(original);
+        pdfCard();
         wordCard();
         excelCard();
         phoneScreen(ImageIO.read(new File(a[1])), original);
@@ -273,6 +277,77 @@ public class EditBanner {
             int u = Math.max(0, Math.min(ICON_W - 1, x - ICON_X)), v = Math.max(0, Math.min(ICON_H - 1, y - ICON_Y));
             img.setRGB(x, y, mix(img.getRGB(x, y), small.getRGB(u, v), in / 16.0));
         }
+    }
+
+    // ------------------------------------------------------------ 5. значки PDF
+
+    /** Старый значок PDF внизу (красный документ с «вихрем») вместе с полями; подпись «PDF» ниже не трогается. */
+    static final int PDF_X0 = 80, PDF_Y0 = 588, PDF_X1 = 196, PDF_Y1 = 712;
+
+    static void pdfIcon(BufferedImage original) {
+        int red = avg(original, 92, 690, 100, 698);   // тело документа у нижнего левого угла — без «вихря»
+        Rectangle2D label = darkBox(original, 95, 715, 185, 768);
+        eraseRows(PDF_X0, PDF_Y0, PDF_X1, PDF_Y1);
+        // Копия значка «Text» (документ с полосками), выровненная по центру подписи «PDF».
+        int dx = (int) Math.round(label.getCenterX()) - 602;
+        recolorCopy(original, dx, new Color(red), false);
+        out.printf("значок PDF: цвет %06X, центр %.1f%n", red, label.getCenterX());
+    }
+
+    /**
+     * Карточка PDF: красные штрихи «вихря» над плашкой стираются — каждая строка маски заполняется переходом
+     * между цветами карточки слева и справа, — и рисуются три строки текста цвета строк соседних карточек.
+     */
+    static void pdfCard() {
+        // Верх плашки «PDF»: прямая от (922, 235) до (1067, 202); всё красное выше неё — «вихрь».
+        java.util.function.DoubleUnaryOperator bannerTop = x -> 235 - (x - 922) * 33.0 / 145.0;
+        int x0 = 930, x1 = 1060, y0 = 95, y1 = 225;
+        boolean[][] mask = new boolean[y1 - y0 + 1][x1 - x0 + 1];
+        for (int y = y0; y <= y1; y++) for (int x = x0; x <= x1; x++) {
+            if (isReddish(img.getRGB(x, y)) && y < bannerTop.applyAsDouble(x) - 10) mask[y - y0][x - x0] = true;
+        }
+        // Расширение маски на 3 пикселя — захватывает розовую кайму сглаживания.
+        boolean[][] grown = new boolean[mask.length][mask[0].length];
+        for (int y = 0; y < mask.length; y++) for (int x = 0; x < mask[0].length; x++) {
+            if (!mask[y][x]) continue;
+            for (int j = -3; j <= 3; j++) for (int i = -3; i <= 3; i++) {
+                int yy = y + j, xx = x + i;
+                if (yy >= 0 && xx >= 0 && yy < mask.length && xx < mask[0].length
+                        && y0 + yy < bannerTop.applyAsDouble(x0 + xx) - 8) grown[yy][xx] = true;
+            }
+        }
+        for (int y = 0; y < grown.length; y++) {
+            int x = 0;
+            while (x < grown[0].length) {
+                if (!grown[y][x]) { x++; continue; }
+                int s = x;
+                while (x < grown[0].length && grown[y][x]) x++;
+                int l = img.getRGB(x0 + s - 1, y0 + y), r = img.getRGB(x0 + x, y0 + y);
+                // У самого края плашки соседний пиксель может оказаться красным — тогда берётся другой край
+                // или цвет карточки чуть выше.
+                boolean lr = isReddish(l), rr = isReddish(r);
+                if (lr && rr) { l = r = avg(img, x0 + s, y0 + y - 12, x0 + x - 1, y0 + y - 10); }
+                else if (lr) l = r;
+                else if (rr) r = l;
+                for (int k = s; k < x; k++) img.setRGB(x0 + k, y0 + y, mix(l, r, (k - s + 1.0) / (x - s + 1.0)));
+            }
+        }
+        // Строки текста — с наклоном плашки, цветом строк на карточке документа.
+        int lineColor = 0x9FB9EC;
+        double angle = Math.atan2(-33, 145);
+        Graphics2D g = quality(img.createGraphics());
+        g.translate(990, 150);
+        g.rotate(angle);
+        g.setColor(new Color(lineColor));
+        g.setStroke(new BasicStroke(10f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        double[] lens = {86, 86, 60};
+        for (int i = 0; i < 3; i++) g.draw(new Line2D.Double(-43, -26 + i * 24, -43 + lens[i], -26 + i * 24));
+        g.dispose();
+    }
+
+    static boolean isReddish(int c) {
+        int[] p = rgb(c);
+        return p[0] - (p[1] + p[2]) / 2.0 > 8;
     }
 
     // ------------------------------------------------------------ 2. летающие карточки
