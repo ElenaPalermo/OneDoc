@@ -215,14 +215,16 @@
 - Замер на реальном телефоне — только с согласия пользователя: прогон удаляет OneDoc с устройства вместе с данными.
 - XLS в сценарий генерации (нужен тестовый `.xls`).
 
-## 5. Обновление зависимостей
-**Что сделать**
-- datastore 1.3.0, kotlinx-serialization-core 1.12.0.
-- POI 6.0.0 — отдельным шагом. Не поднимать плагины `kotlin` и Pdfium (см. `CLAUDE.md`).
-
-**Критерии готовности**
-- Сборка, 109+ юнит-тестов и lint проходят.
-- После POI 6: тесты `XlsReaderTest` и `DocReaderTest` проходят, release с R8 открывает `.xls` и `.doc` без крашей. При необходимости обновлён `poi.keep`.
+## 5. ~~Обновление зависимостей~~ — выполнено 28.10.2026
+Весь каталог сверен с Google Maven и Maven Central (только стабильные версии):
+- **DataStore 1.2.1 → 1.3.0** — обновлён (`42cf23d`). Собран на Kotlin 2.2.20, совместим. Проверено: сборка, 138 юнит-тестов, lint; настройки (вид библиотеки) сохраняются при установке новой версии поверх старой.
+- **kotlinx-serialization-core 1.12.0 — нельзя**: требует `kotlin-stdlib` 2.4.10 (собран на Kotlin 2.4), компилятор Kotlin 2.2 из AGP его не прочитает. Остаётся 1.11.0.
+- **POI 6.0.0 — решено не обновлять, остаётся 5.5.1** (решение пользователя). Причины:
+  - байткод POI 6 — Java 17 (major 61). Сканер dex release-сборки (сверка всех обращений к API платформы с `platforms/android-37.0/data/api-versions.xml`) нашёл по сравнению с POI 5.5.1 одно новое обращение к API новее Android 8 — `Stream.toList()` (API 34): в конструкторах копирования HWPF `Paragraph/CharacterRun/Section` (через `Range(Range)`), `EscherArrayProperty.getGenericProperties`, `CellFormatPart`, `GenericRecordXmlWriter`, HSLF и HEMF. Наш путь чтения `.doc`/`.xls` их статически не вызывает, на API 34 `.doc` и `.xls` (с картинкой, форматами, двумя листами) открывались — но на Android 8–13 это не проверялось, а выигрыша для нас в POI 6 нет;
+  - вернуться к POI 6, если понадобится: проверить на эмуляторе API 26 (`Small_Phone`) открытие `.doc` и `.xls` в release-сборке.
+- **Не трогать (как и раньше):** Pdfium 2.0.1 (2.0.2+ на Kotlin 2.4), плагины `kotlin` 2.2.10 (должны совпадать с Kotlin из AGP).
+- **Остальное уже последнее стабильное:** AGP 9.4.1, Compose BOM 2026.09.00, core-ktx, Lifecycle, Activity, Navigation, Room, корутины, documentfile, KSP 2.3.12, uiautomator, benchmark/profileinstaller, junit, espresso, kxml2.
+- **Можно позже:** в AAB лежат неиспользуемые ресурсы POI (`presetShapeDefinitions.xml` ~540 КБ, `empty.ppt`, таблицы HDGF) — их можно исключить через `packaging.resources.excludes`, чтобы сократить размер.
 
 ## 6. Разбор XLSX без промежуточного `SheetCell`
 **Что сделать**
